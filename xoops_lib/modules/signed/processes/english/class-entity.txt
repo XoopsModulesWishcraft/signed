@@ -1,0 +1,30 @@
+Sole Trader
+Public Company
+Private Company
+Family Trust
+Business Trust
+Superannuation Company/Trust
+Association
+Not For Profit
+Charity
+Cooperative
+Educational Business
+Security Business/Firm
+Produce/Farming Business
+Manufactures/Wholesaling business
+University/College/School
+Club/Sport/Social Business
+Financial Services Institute
+Financial Services Business
+Humanitarian Principles/Endeavour
+Scientific Endeavour
+Religious Organisation
+Government Sponsored Business
+Diplomatic Principle
+Political Representative/Business
+Local Government Department
+State Government Department
+Federal Government Department
+Military Department
+Intelligence Agency
+Other form of Business

@@ -1,0 +1,9 @@
+global
+captcha
+content
+countries
+errors
+mail
+timezone
+uploader
+titles

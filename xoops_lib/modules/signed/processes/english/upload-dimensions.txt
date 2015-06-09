@@ -1,0 +1,2 @@
+landscape:state-one:800x400
+portrait:state-one:400x800

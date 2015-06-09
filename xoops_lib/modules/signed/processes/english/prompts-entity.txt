@@ -1,0 +1,7 @@
+help|entity:introduction
+help|identification:needed
+fields|entity:generic-form
+fields|personal:generic-form
+fields|identification:identification-form
+deployed|entity:send-email
+help|entity:finished

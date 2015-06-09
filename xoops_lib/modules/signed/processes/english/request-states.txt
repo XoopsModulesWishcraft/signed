@@ -1,0 +1,4 @@
+incorrect-data|The Data is Invalid or Incorrect or has serve inaccuracies|no-expires|all
+incorrect-image|The Image is the incorrect one specified inaccuracies|expires|images
+ourrecords-data|The Data in the signature by our records is old and need's updating to later periods details|no-expires|all
+ourrecords-image|The Image in the signature by our records is old and need's updating to later periods details|expires|images

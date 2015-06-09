@@ -1,0 +1,6 @@
+help|personal:introduction
+help|identification:needed
+fields|personal:generic-form
+fields|identification:identification-form
+deployed|personal:send-email
+help|personal:finished

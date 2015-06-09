@@ -1,0 +1,14 @@
+entity-name
+entity-department
+entity-rbn
+entity-address
+entity-suburb
+entity-state
+entity-postcode
+name
+address
+suburb
+state
+postcode
+serial-number
+im-address

@@ -1,0 +1,12 @@
+entity-twitter
+entity-facebook
+entity-linkedin
+entity-googleplus
+entity-youtube
+entity-blog
+twitter
+facebook
+linkedin
+googleplus
+youtube
+blog

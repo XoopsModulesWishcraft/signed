@@ -1,0 +1,13 @@
+id-score-required:100
+personal-required:name,address,suburb,state,country,postcode,email,mobile,dob,gender
+entity-required:entity-name,entity-address,entity-suburb,entity-state,entity-country,entity-postcode,entity-manager-email,entity-email,entity-phone,entity-accountant-email,entity-rbn,entity-dor
+email-verification:email,entity-email,entity-manager-email
+mobile-verification:mobile,entity-mobile
+social-verification:
+web-verification:
+email-validation:email,paypal-email,entity-email,entity-manager-email,entity-accountant-email,entity-paypal-email
+url-validation:twitter,facebook,linkedin,googleplus,youtube,blog,entity-twitter,entity-facebook,entity-linkedin,entity-googleplus,entity-youtube,entity-blog
+banning-validation:email,paypal-email,twitter,facebook,linkedin,googleplus,youtube,blog,entity-email,entity-manager-email,entity-accountant-email,entity-paypal-email,entity-twitter,entity-facebook,entity-linkedin,entity-googleplus,entity-youtube,entity-blog
+pathways-emails:email,paypal-email,entity-email,entity-manager-email,entity-accountant-email,entity-paypal-email
+pathways-names:name,entity-name
+pathways-dates:dob,entity-dor

@@ -1,0 +1,6 @@
+phone
+fax
+mobile
+entity-phone
+entity-fax
+entity-mobile

@@ -1,0 +1,6 @@
+help|entity:updating
+fields|entity:generic-edit-form
+fields|personal:generic-edit-form
+fields|identification:identification-edit-form
+deployed|entity:update-email
+help|entity:finished-edit

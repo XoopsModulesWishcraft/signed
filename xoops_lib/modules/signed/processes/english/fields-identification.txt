@@ -1,0 +1,5 @@
+image|Image of Identification|required
+serial-number|Identification Number|required
+expiry-month|Identification Expiry Month|required
+expiry-year|Identification Expiry Year|required
+issue-country|Country of Issue|required

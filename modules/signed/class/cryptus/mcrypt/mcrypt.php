@@ -1,0 +1,199 @@
+<?php
+/**
+ * Chronolabs Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ *
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * @copyright       Chronolabs Cooperative http://labs.coop
+ * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
+ * @package         signed
+ * @since           2.07
+ * @author          Simon Roberts <wishcraft@users.sourceforge.net>
+ * @author          Leshy Cipherhouse <leshy@slams.io>
+ * @subpackage		cryptographic
+ * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ */
+
+if (!class_exists("signedCryptusLibraries"))
+	die('Signed Cryptus Library handler need to be loaded first - Restricted Access!');
+
+class signedCryptusMcrypt extends signedCryptusLibraries
+{
+	
+	
+	/**
+	 *
+	 * @var string
+	 */
+	var $name = "mCryptLib";
+
+	/**
+	 *
+	 * @var string
+	 */
+	var $filename = array("library"=>0,"mode"=>1, "bit" => 2, "cipher" => 3);
+	
+	/**
+	 *
+	 * @var string
+	 */
+	var $seperator = '-==-';
+		
+	/**
+	 *
+	 * @var string
+	 */
+	var $phplibry = array("mcrypt");
+	
+	/**
+	 *
+	 * @var string
+	 */
+	var $phpfuncs = array(	"mcrypt_list_algorithms", "mcrypt_list_modes", "mcrypt_get_key_size","mcrypt_decrypt",
+							"mcrypt_get_iv_size", "mcrypt_create_iv", "mcrypt_encrypt", "base64_decode", "base64_encode");
+	
+	/**
+	 *
+	 * @var string
+	 */
+	var $filetype = '';
+	
+	/**
+	 *
+	 */
+	function __construct()
+	{
+		
+	}
+	
+	/**
+	 *
+	 */
+	function __destruct()
+	{
+	
+	}
+	
+	/**
+	 *
+	 * @return Ambigous <NULL, signedCryptusAesctr>
+	 */
+	static function getInstance()
+	{
+		ini_set('display_errors', true);
+		error_reporting(E_ERROR);
+	
+		static $object = NULL;
+		if (!is_object($object))
+			$object = new signedCryptusMysql();
+		return $object;
+	}
+	
+	/**
+	 * 
+	 * @return multitype:string
+	 */
+	function getAlgorithms()
+	{
+		
+		return array(dirname(__DIR__)	=>	mcrypt_list_algorithms());
+	}
+	
+	/**
+	 * 
+	 * @return multitype:multitype:number string
+	 */
+	function getFileExtensions()
+	{
+		static $extensions = array();
+		if (empty($extensions))
+			foreach($this->getAlgorithms() as $folder => $algorithms)
+				foreach($algorithms as $id => $cipher)
+					foreach(mcrypt_list_modes() as $kiey => $mode)
+						if (($bitz == mcrypt_get_key_size($cipher, $mode)) > 0 )
+							$extensions[dirname(__DIR__) . '.' . ".$mode.$bitz".str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $cipher)))] = array("keyen"=>$bitz, "mode"=>$mode, "cipher" => $cipher, "salt" => SIGNED_BLOWFISH_SALT);
+		return $extensions;
+	}
+	
+	
+	/**
+	 *
+	 * @return multitype:multitype:number string
+	 */
+	function setFiletype($bitz = 0, $cipher = '',$mode = '')
+	{
+		if (!empty($bitz) && !empty($cipher))
+			foreach($this->getFileExtensions() as $filetype => $values)
+				if ($bitz == $values["keyen"] && $cipher == $values["cipher"] && $mode == $values["mode"])
+					return $this->filetype = $filetype;
+		return $this->filetype;
+	}
+	
+	/**
+	 *
+	 * @return multitype:multitype:number string
+	 */
+	private function getKeyBitz($cipher = '',$mode = '')
+	{
+		$extensions = array();
+		foreach($this->getFileExtensions() as $ext => $values)
+			if (empty($cipher) && !empty($mode))
+				if ($values['mode'] == $mode)
+					$extensions[$ext] =$values;
+			elseif (!empty($cipher) && !empty($mode))
+				if ($values['mode'] == $mode && $values['cipher'] == $cipher)
+					$extensions[$ext] =$values;
+			elseif (!empty($cipher) && empty($mode))
+				if ($values['cipher'] == $cipher)
+					$extensions[$ext] =$values;
+		return parent::getKeyBitz($extensions);
+	}	
+	
+	/**
+	 * 
+	 * @param unknown_type $data
+	 * @param unknown_type $key
+	 * @param unknown_type $bitz
+	 * @return boolean
+	 */
+	function crypt($data = '', $key = '', $cipher = '',$mode = '')
+	{
+		if (($bitz = parent::getKeiyeLength($key, array_key($this->getKeyBitz($cipher, $mode))))>0)
+		{
+			$iv_size = mcrypt_get_iv_size($cipher, $mode);
+			$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+			setFiletype($bitz, $cipher, $mode);
+			return base64_encode($iv.mcrypt_encrypt($cipher, $key, $data, $mode, $iv));
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param unknown_type $data
+	 * @param unknown_type $key
+	 * @param unknown_type $bitz
+	 * @return boolean
+	 */
+	function decrypt($data = '', $key = '', $mode = '', $cipher = '',$mode = '')
+	{
+		if (($bitz = parent::getKeiyeLength($key, array_key($this->getKeyBitz($cipher, $mode))))>0)
+		{
+			 $ciphertext_dec = base64_decode($data);
+			 $iv_size = mcrypt_get_iv_size($cipher, $mode);
+    		 $iv_dec = substr($ciphertext_dec, 0, $iv_size);
+    		 $ciphertext_dec = substr($ciphertext_dec, $iv_size);
+    		 setFiletype($bitz, $cipher, $mode);
+			 return mcrypt_decrypt($cipher, $key, $ciphertext_dec, $mode, $iv_dec);
+		}
+		return false;
+	}
+}
+
+?>

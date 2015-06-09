@@ -1,0 +1,2 @@
+personal|Personal & Individual
+entity|Business, Government or Organisation

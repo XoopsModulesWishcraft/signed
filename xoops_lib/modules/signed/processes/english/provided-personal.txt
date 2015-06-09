@@ -1,0 +1,3 @@
+xml|email;attachment:file
+key|email;variable:signaturekey
+code|email;variable:signaturecode

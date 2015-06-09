@@ -1,0 +1,6 @@
+email
+paypal-email
+entity-email
+entity-manager-email
+entity-accountant-email
+entity-paypal-email
