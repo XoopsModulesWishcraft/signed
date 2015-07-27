@@ -21,7 +21,18 @@
 
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'common.php';
 $GLOBALS['xoopsLogger']->activated = false;
-ini_set('display_errors', true'); ini_set('log_errors', true); ini_set('error_log', XOOPS_ROOT_PATH . DIRETORY_SEPARATOR . 'php-errors.txt'); error_reporting(E_ALL);
+/**
+ * Opens Access Origin Via networking Route NPN
+ */
+header('Access-Control-Allow-Origin: *');
+header('Origin: *');
+
+/**
+ * Turns of GZ Lib Compression for Document Incompatibility
+ */
+ini_set("zlib.output_compression", 'Off');
+ini_set("zlib.output_compression_level", -1);
+
 ob_end_flush();
 header('Content-type: application/json');
 set_time_limit(120);

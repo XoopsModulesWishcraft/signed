@@ -42,13 +42,13 @@ class signedCryptusMysql extends signedCryptusLibraries
 	 * 
 	 * @var string
 	 */
-	var $encryptsql = "SELECT COMPRESS(%s(\"%s\", \"%s\")) as `encrypt`";
+	var $encryptsql = "SELECT %s(\"%s\", \"%s\") as `encrypt`";
 	
 	/**
 	 *
 	 * @var string
 	 */
-	var $decryptsql = "SELECT UNCOMPRESS(%s(\"%s\", \"%s\")) as `decrypt`";
+	var $decryptsql = "SELECT %s(\"%s\", \"%s\") as `decrypt`";
 	
 	/**
 	 *
@@ -112,9 +112,7 @@ class signedCryptusMysql extends signedCryptusLibraries
 	 */
 	function getAlgorithms()
 	{
-		return array(dirname(__DIR__)	=>	array(	'code.128'=>array("encrypt"=>"ENCODE","decrypt"=>"DECODE"),
-													'des.192'=>array("encrypt"=>"AES_ENCRYPT","decrypt"=>"AES_DECRYPT"),
-													'aes.256'=>array("encrypt"=>"AES_ENCRYPT","decrypt"=>"AES_DECRYPT")));
+		return array(basename(__DIR__)	=>	array(	'encode'=>array("encrypt"=>"ENCODE","decrypt"=>"DECODE")));
 	}
 	
 	/**
@@ -123,9 +121,7 @@ class signedCryptusMysql extends signedCryptusLibraries
 	 */
 	function getFileExtensions()
 	{
-		return array(		dirname(__DIR__) . '.code.128' => array("keyen"=>128, "salt" => SIGNED_BLOWFISH_SALT), 
-							dirname(__DIR__) . '.des.192' => array("keyen"=>192, "salt" => SIGNED_BLOWFISH_SALT), 
-							dirname(__DIR__) . '.aes.256' => array("keyen"=>256, "salt" => SIGNED_BLOWFISH_SALT));
+		return array(		basename(__DIR__) . '.encode' => array("keyen"=>128, "salt" => SIGNED_BLOWFISH_SALT));
 	}
 	
 	

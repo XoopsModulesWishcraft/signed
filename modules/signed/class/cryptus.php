@@ -30,7 +30,7 @@ class signedCryptus extends XoopsObject
 	 */
 	function __construct()
 	{
-		$this->cryptolibs = signedCryptusLibraries::getInstance();
+		
 	}
 	
 	/**
@@ -70,15 +70,23 @@ class signedCryptusHandler  extends XoopsPersistableObjectHandler
 	 */
 	static function getInstance()
 	{
-		ini_set('display_errors', true);
-		error_reporting(E_ERROR);
-		
 		static $object = NULL;
 		if (!is_object($object))
-			$object = new signedCryptus();
+			$object = new signedCryptusHandler();
 		return $object;
 	}
 		
+	
+	/**
+	 *
+	 * @return Ambigous <NULL, signedProcessess>
+	 */
+	static function getRandomExtension()
+	{
+		$keys = array_keys($_SESSION['signed']['ciphers']);
+		return $_SESSION['signed']['ciphers'][$keys[mt_rand(0, count($keys)-1)]];
+	}
+	
 	/**
 	 * 
 	 * @param unknown_type $reverse
@@ -96,28 +104,18 @@ class signedCryptusHandler  extends XoopsPersistableObjectHandler
 	 */
 	static function generateSalts($length = 256, $microtime = 0)
 	{
+		if ($microtime == 0)
+			$microtime = microtime(true);
+		mt_srand(mt_rand(-$microtime, 7096*$microtime));
+		mt_srand(mt_rand(-$microtime, 4096*$microtime));
+		mt_srand(mt_rand(-$microtime, 5096*$microtime));
+		mt_srand(mt_rand(-$microtime, 5096*$microtime));
+		mt_srand(mt_rand(-$microtime, 5696*$microtime));
+		mt_srand(mt_rand(-$microtime, 7096*$microtime));
 		$salt = '';
 		while (strlen($salt)<$length)
 		{
-			mt_srand(microtime(true)/mt_rand(1024, 9096*512));
-			mt_srand(microtime(true)/mt_rand(1024, 9096*512));
-			mt_srand(microtime(true)/mt_rand(1024, 9096*512));
-			switch ((string)mt_rand(0,3))
-			{
-				case "0":
-					$salt .= chr(mt_rand(ord("a"), ord("z")));
-					break;
-				case "1":
-					$salt .= chr(mt_rand(ord("A"), ord("Z")));
-					break;
-				case "2":
-					$salt .= chr(mt_rand(ord("1"), ord("9")));
-					break;
-				case "3":
-					$salt .= chr(mt_rand(ord("`"), ord("\\")));
-					break;
-						
-			}
+			$salt = chr(mt_rand(57, 129)) . $salt;
 		}
 		return $salt;
 	}
@@ -126,22 +124,22 @@ class signedCryptusHandler  extends XoopsPersistableObjectHandler
 	 * 
 	 * @param unknown_type $filename
 	 */
-	static function writeBlowfishSalts($filename = '')
+	static function writeBlowfishSalts($filename = '', $salt = '')
 	{
-		if (file_exists($filename))
+		if (file_exists($filename) && !empty($salt))
 		{
 			mt_srand(microtime(true)/mt_rand(1024, 9096*512));
 			mt_srand(microtime(true)/mt_rand(1024, 9096*512));
 			mt_srand(microtime(true)/mt_rand(1024, 9096*512));
-			$parts = file($filename);
+			$parts = explode("\n",file_get_contents($filename));
 			foreach($parts as $key => $value)
 			{
 				if (strpos($value, 'SIGNED_BLOWFISH_WHEN') && strpos($value, "%%%%%%%%%%%%%%%%%%%%%"))
-					$parts[$key] = str_replace("%%%%%%%%%%%%%%%%%%%%%", '"' . microtime(true) . '"', $value);
+					$parts[$key] = str_replace("%%%%%%%%%%%%%%%%%%%%%", microtime(true), $value);
 				elseif (strpos($value, 'SIGNED_BLOWFISH_SALT') && strpos($value, "%%%%%%%%%%%%%%%%%%%%%"))
-					$parts[$key] = str_replace("%%%%%%%%%%%%%%%%%%%%%", '"' . signedCryptusHandler::generateSalts(mt_rand(1024, 9096*512), microtime(true)) . '"', $value);
+					$parts[$key] = str_replace("%%%%%%%%%%%%%%%%%%%%%", $salt, $value);
 				elseif (strpos($value, 'SIGNED_BLOWFISH_HOST') && strpos($value, "%%%%%%%%%%%%%%%%%%%%%"))
-					$parts[$key] = str_replace("%%%%%%%%%%%%%%%%%%%%%", '"' . XOOPS_URL . '"', $value);
+					$parts[$key] = str_replace("%%%%%%%%%%%%%%%%%%%%%", XOOPS_URL, $value);
 			}
 			chmod($filename, 0777);
 			unlink($filename);

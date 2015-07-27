@@ -19,12 +19,13 @@
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */
-		
 	
-	$path = dirname(dirname(dirname(dirname(__FILE__))));
-	include_once $path . '/mainfile.php';
-	include_once $path . '/include/cp_functions.php';
-	require_once $path . '/include/cp_header.php';
+	define("_PATH_ROOT", dirname(__DIR__));
+	
+	require_once '../../../mainfile.php';
+	require_once '../../../include/cp_functions.php';
+	require_once '../../../include/cp_header.php';
+	
 	
 	global $xoopsModule;	
 	$thisModuleDir = $GLOBALS['xoopsModule']->getVar('dirname');

@@ -19,6 +19,7 @@
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */
 
+	$GLOBALS['errors'] = array();
 	define('_SIGNED_EVENT_SYSTEM', 'generator');
 	require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'header.php';
 	

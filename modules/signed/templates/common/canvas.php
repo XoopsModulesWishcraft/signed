@@ -24,10 +24,12 @@
 	signedCanvas::getInstance()->addStylesheet(  _URL_CSS . "/style.css" );
 	signedCanvas::getInstance()->addScript(XOOPS_URL . '/browse.php?Frameworks/jquery/jquery.js',  array("type"=>"text/javascript"));
 
-		if (defined('_SIGNED_ERRORS') || isset($GLOBALS['error'])) { ?>
+		if (defined('_SIGNED_ERRORS') || count($GLOBALS['errors'])>0) { ?>
 		<div id="errors">
 			<h1>Error(s) that have occured:~</h1>
-			<?php echo (defined('_SIGNED_ERRORS')?constant('_SIGNED_ERRORS'):isset($GLOBALS['error'])?$GLOBALS['error']:''); ?>
+			<ol><li>
+			<?php echo (defined('_SIGNED_ERRORS')?constant('_SIGNED_ERRORS'):isset($GLOBALS['errors'])?implode("</li><li>",$GLOBALS['errors']):''); ?>
+			</li></ol>
 		</div>
 		<?php } ?>
 		<?php if (strlen(defined('_SIGNED_CANVAS')?constant('_SIGNED_CANVAS'):isset($GLOBALS['canvas'])?$GLOBALS['canvas']:'')>0) { ?>

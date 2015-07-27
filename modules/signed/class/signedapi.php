@@ -22,6 +22,20 @@
 
 
 defined('_PATH_ROOT') or die('Restricted access');
+
+/**
+ * Opens Access Origin Via networking Route NPN
+ */
+header('Access-Control-Allow-Origin: *');
+header('Origin: *');
+
+/**
+ * Turns of GZ Lib Compression for Document Incompatibility
+ */
+ini_set("zlib.output_compression", 'Off');
+ini_set("zlib.output_compression_level", -1);
+
+
 /**
  * 
  */

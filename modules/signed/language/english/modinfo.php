@@ -29,7 +29,7 @@
 	
 	// Module Definitions
 	define('_SIGNED_MI_MODULE_NAME', 'Self Signed');
-	define('_SIGNED_MI_MODULE_VERSION', '1.14');
+	define('_SIGNED_MI_MODULE_VERSION', '2.19');
 	define('_SIGNED_MI_MODULE_DESCRIPTION', 'Final Major Release');
 	define('_SIGNED_MI_MODULE_AUTHOR', 'Simon Roberts aka. Leshy Cipherhouse <leshy@slams.io>');
 	define('_SIGNED_MI_MODULE_CREDITS', 'cipher, MyNamesNot, Wishcraft');
@@ -179,16 +179,40 @@
 	define('_SIGNED_MI_SMS_CARDBOARDFISH_PASS_DESC', '');
 	
 	
-	// Additions in version 2.07
+	// Additions in version 2.0.7
 	define('_SIGNED_MI_ENCRYPTION', 'Enable Cycling Algorithm File Encryption System');
-	define('_SIGNED_MI_ENCRYPTION_DESC', '');
+	define('_SIGNED_MI_ENCRYPTION_DESC', 'Every time a data file is read and re-written then change and cycle the encryption algorithm!');
 	define('_SIGNED_MI_CIPHERS', 'Cipher algorithms to use in the cycle');
-	define('_SIGNED_MI_CIPHERS_DESC', '');
-	define('_SIGNED_MI_SSLPEMKEY_PATH', 'OpenSSL-RSA PEM Key path for [rsa-opensll] cipher');
-	define('_SIGNED_MI_SSLPEMKEY_PATH_DESC', '');
+	define('_SIGNED_MI_CIPHERS_DESC', 'Ciphers to support in the algoritm! (Enable mCrypt + OpenSSL For more Algoritms)');
+	define('_SIGNED_MI_SSLPEMKEY_PATH', 'OpenSSL-RSA PEM Key path for [rsa-openssl] cipher');
+	define('_SIGNED_MI_SSLPEMKEY_PATH_DESC', 'Path to the PEM Key to use for rsa-openssl signing');
 	define('_SIGNED_MI_USEOCR', 'Support OCR API');
-	define('_SIGNED_MI_USEOCR_DESC', '');
+	define('_SIGNED_MI_USEOCR_DESC', 'Support the <a href="http://jump.labs.coop/ug8oaq" target="_blank">OCR API for identification bitmapping</a>!!');
 	define('_SIGNED_MI_OCRAPI', 'Path for the Online OCR API');
-	define('_SIGNED_MI_OCRAPI_DESC', '');
+	define('_SIGNED_MI_OCRAPI_DESC', 'Path for the <a href="http://jump.labs.coop/ug8oaq" target="_blank">OCR API for identification bitmapping</a>!!');
+	define('_SIGNED_MI_SALTY_NEEDTOBESET', 'Your blowfish encryption salt needs to be set; you will have to assign one or retrieve your old salt from the API Services!!');
 	
+	// Version 2.1.9
+	define('_SIGNED_MI_SMS_SIP_SERVER', 'SIP/VOIP Server Hostname');
+	define('_SIGNED_MI_SMS_SIP_SERVER_DESC', 'This is the network routable hostname for the SIP/VOIP Service');
+	define('_SIGNED_MI_SMS_SIP_USER', 'SIP/VOIP Service Username');
+	define('_SIGNED_MI_SMS_SIP_USER_DESC', 'This is the the username for the SIP/VOIP Service');
+	define('_SIGNED_MI_SMS_SIP_PASS', 'SIP/VOIP Service Password');
+	define('_SIGNED_MI_SMS_SIP_PASS_DESC', 'This is the username for the SIP/VOIP Service');
+	
+	// Version 2.1.9 - Configuration Categories
+	define('_SIGNED_MI_CONFCAT_SEO', 'URL SEO');
+	define('_SIGNED_MI_CONFCAT_SEO_DESC', 'Short URL and .htaccess settings');
+	define('_SIGNED_MI_CONFCAT_CIPHERS', 'Cryptographic Engines');
+	define('_SIGNED_MI_CONFCAT_CIPHERS_DESC', 'Algorithms and Cipher Options');
+	define('_SIGNED_MI_CONFCAT_SYSTEMS', 'General Settings');
+	define('_SIGNED_MI_CONFCAT_SYSTEMS_DESC', 'Generalised System Options & Settings');
+	define('_SIGNED_MI_CONFCAT_FILES', 'File IO And Stores');
+	define('_SIGNED_MI_CONFCAT_FILES_DESC', 'Storage systems and file store methods!');
+	define('_SIGNED_MI_CONFCAT_APIS', 'Signed Application Programmable Interfaces');
+	define('_SIGNED_MI_CONFCAT_APIS_DESC', 'Option for the self disovery API for Signed!');
+	define('_SIGNED_MI_CONFCAT_EMAIL', 'Email options');
+	define('_SIGNED_MI_CONFCAT_EMAIL_DESC', 'Settings for Email in Signed!');
+	define('_SIGNED_MI_CONFCAT_SMS', 'SMS & Mobile Options');
+	define('_SIGNED_MI_CONFCAT_SMS_DESC', 'Settings for SMS & Mobile Messaging!');
 ?>
