@@ -102,7 +102,7 @@ class signedCryptusMcrypt extends signedCryptusLibraries
 	function getAlgorithms()
 	{
 		
-		return array(basename(__DIR__)	=>	mcrypt_list_algorithms());
+		return array(dirname(__DIR__)	=>	mcrypt_list_algorithms());
 	}
 	
 	/**
@@ -117,7 +117,7 @@ class signedCryptusMcrypt extends signedCryptusLibraries
 				foreach($algorithms as $id => $cipher)
 					foreach(mcrypt_list_modes() as $kiey => $mode)
 						if (($bitz == mcrypt_get_key_size($cipher, $mode)) > 0 )
-							$extensions[basename(__DIR__) . '.' . ".$mode.$bitz".str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $cipher)))] = array("keyen"=>$bitz, "mode"=>$mode, "cipher" => $cipher, "salt" => SIGNED_BLOWFISH_SALT);
+							$extensions[dirname(__DIR__) . '.' . ".$mode.$bitz".str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $cipher)))] = array("keyen"=>$bitz, "mode"=>$mode, "cipher" => $cipher, "salt" => SIGNED_BLOWFISH_SALT);
 		return $extensions;
 	}
 	
@@ -181,7 +181,7 @@ class signedCryptusMcrypt extends signedCryptusLibraries
 	 * @param unknown_type $bitz
 	 * @return boolean
 	 */
-	function decrypt($data = '', $key = '', $cipher = '',$mode = '')
+	function decrypt($data = '', $key = '', $mode = '', $cipher = '',$mode = '')
 	{
 		if (($bitz = parent::getKeiyeLength($key, array_key($this->getKeyBitz($cipher, $mode))))>0)
 		{

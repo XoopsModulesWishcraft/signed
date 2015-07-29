@@ -15,7 +15,7 @@
  * @since           2.07
  * @author          Simon Roberts <wishcraft@users.sourceforge.net>
  * @author          Leshy Cipherhouse <leshy@slams.io>
- * @subpackage		module
+ * @subpackage		cryptographic
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */

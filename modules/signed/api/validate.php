@@ -19,7 +19,7 @@
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */
-
+	
 	if (defined("_SIGNED_API_ENABLED")) {
 		if (constant("_SIGNED_API_ENABLED")==false) 
 		{

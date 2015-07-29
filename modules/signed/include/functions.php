@@ -20,16 +20,15 @@
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */
 
-	
+
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'xmlarray.php';
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'xmlwrapper.php';
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'cache' . _DS_ . 'signedcache.php';
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedlists.php';
-	
+
 	/**
 	 * Loads signed Objectivity
 	 */
-	
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedapi.php';
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedarrays.php';
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedcanvas.php';
@@ -41,23 +40,21 @@
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedprompts.php';
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedsecurity.php';
 	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedstorage.php';
-	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'cryptus.php';
+	require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedcryptus.php';
 	
 	if (file_exists($blowfish = __DIR__ . DIRECTORY_SEPARATOR . 'blowfish-salt.php'))
-	{
 		require_once($blowfish);
 		if (constant("SIGNED_BLOWFISH_SALT") != "%%%%%%%%%%%%%%%%%%%%%")
 			chmod($blowfish, 0400);
-	}
-	
+		elseif(signedCryptusHandler::writeBlowfishSalts($blowfish))
+			chmod($blowfish, 0400);
+		
 	/**
 	 * gets Instances of signed Objectivity
 	 */
 	global $security, $io;
 	$GLOBALS['security'] = signedSecurity::getInstance();
 	$GLOBALS['io'] = signedStorage::getInstance(_SIGNED_STORAGE);
-	
-	
 	
 	/**
 	 * signed language loader wrapper
@@ -145,80 +142,77 @@
 		return $mailer;
 	}
 	
-
 	/**
 	 * Function to get the base domain name from a URL.
 	 * credit for this function should goto Phosphorus and Lime, it is released under LGPL.
 	 *
 	 * @param string $url the URL to be stripped.
 	 * @return string
+	 * @fixed
 	 */
-	function signed_getBaseDomain($url)
+	function signed_getBaseDomain($url, $debug = 0)
 	{
-		static $strata, $fallout, $stratas;
-
-        require_once dirname(__DIR__) . 'class'. DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'signedcache.php';
-
-        if (empty($strata))
-        {
-            if (!$strata = SignedCache::read('internets_stratas'))
-            {
-                if (empty($stratas))
-                    $stratas = explode("\n", file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'strata-api-uri.diz'));
-                shuffle($stratas);
-                $attempts = 0;
-                while(empty($strata) || $attempts < (count($strata) * 1.65))
-                {
-                    $attempts++;
-                    $strata = array_keys(unserialize(getURIData($stratas[mt_rand(0, count($stratas)-1)] ."/v1/strata/serial.api", 15, 19)));
-                }
-                if (!empty($strata))
-                    SignedCache::write('internets_stratas', $strata, 3600*24*mt(3.75,11));
-            }
-        }
-        if (empty($fallout))
-        {
-            if (!$fallout = SignedCache::read('internets_fallouts'))
-            {
-                if (empty($stratas))
-                    $stratas = explode("\n", file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'strata-api-uri.diz'));
-                shuffle($stratas);
-                $attempts = 0;
-                while(empty($fallout) || $attempts < (count($strata) * 1.65))
-                {
-                    $attempts++;
-                    $fallout = array_keys(unserialize(getURIData($stratas[mt_rand(0, count($stratas)-1)] ."/v1/fallout/serial.api", 15, 19)));
-                }
-                if (!empty($fallout))
-                    SignedCache::write('internets_fallouts', $fallout, 3600*24*mt(3.75,11));
-            }
-        }
-        
-        // Get Full Hostname
-        $url = strtolower($url);
-        $hostname = parse_url($url, PHP_URL_HOST);
-        if (!filter_var($hostname, FILTER_VALIDATE_IP) === true) 
-            return $hostname;
-    
-        // break up domain, reverse
-        $elements = explode('.', $hostname);
-        $elements = array_reverse($elements);
-        
-        // Returns Base Domain
-        if (in_array($elements[0], $fallout) && in_array($elements[1], $strata))
-            return $elements[2] . '.' . $elements[1] . '.' . $elements[0];
-        elseif (in_array($elements[0], $fallout) || in_array($elements[0], $strata))
-            return $elements[1] . '.' . $elements[0];
-        
-        // Nothing Found
-        return $hostname;
+		$base_domain = '';
+		$url = strtolower($url);
+		
+		if ($G_TLD = signedCache::read('dms_realms_list'))
+		{
+			$G_TLD = array_keys(unserialize(file_get_contents("http://strata.labs.coop/v1/strata/serial.api")));
+			if (empty($G_TLD))
+				$G_TLD = array_keys(unserialize(file_get_contents("https://strata.ringwould.com.au/v1/strata/serial.api")));
+				if (empty($G_TLD))
+					$G_TLD = array_keys(unserialize(file_get_contents("http://strata.ringwould.com.au/v1/strata/serial.api")));
+			signedCache::write('dms_realms_list', $G_TLD, 3600*24*mt(3.75,11));
+		}
+		if ($C_TLD = signedCache::read('fallout_realms_list'))
+		{
+				$C_TLD = array_keys(unserialize(file_get_contents("http://strata.labs.coop/v1/fallout/serial.api")));
+				if (empty($C_TLD))
+					$C_TLD = array_keys(unserialize(file_get_contents("https://strata.ringwould.com.au/v1/fallout/serial.api")));
+					if (empty($C_TLD))
+						$C_TLD = array_keys(unserialize(file_get_contents("http://strata.ringwould.com.au/v1/fallout/serial.api")));
+				signedCache::read('fallout_realms_list', $C_TLD, 3600*24*mt(3.75,11));
+		}
+	
+		// get domain
+		if (!$full_domain = signed_getUrlDomain($url)) {
+			return $base_domain;
+		}
+	
+		// break up domain, reverse
+		$DOMAIN = explode('.', $full_domain);
+		if ($debug) {
+			//print_r($DOMAIN);
+		}
+		$DOMAIN = array_reverse($DOMAIN);
+		if ($debug) {
+			//print_r($DOMAIN);
+		}
+		// first check for ip address
+		if (count($DOMAIN) == 4 && is_numeric($DOMAIN[0]) && is_numeric($DOMAIN[3])) {
+			return $full_domain;
+		}
+	
+		// if only 2 domain parts, that must be our domain
+		if (count($DOMAIN) <= 2) {
+			return $full_domain;
+		}
+	
+		/*
+		 finally, with 3+ domain parts: obviously D0 is tld now,
+		if D0 = ctld and D1 = gtld, we might have something like com.uk so,
+		if D0 = ctld && D1 = gtld && D2 != 'www', domain = D2.D1.D0 else if D0 = ctld && D1 = gtld && D2 == 'www',
+		domain = D1.D0 else domain = D1.D0 - these rules are simplified below.
+		*/
+		if (in_array($DOMAIN[0], $C_TLD) && in_array($DOMAIN[1], $G_TLD) && $DOMAIN[2] != 'www') {
+			$full_domain = $DOMAIN[2] . '.' . $DOMAIN[1] . '.' . $DOMAIN[0];
+		} else {
+			$full_domain = $DOMAIN[1] . '.' . $DOMAIN[0];
+		}
+		// did we succeed?
+		return $full_domain;
 	}
 	
-	/**
-	 * 
-	 * @param unknown_type $url
-	 * @return Ambigous <string, mixed>
-	 */
 	function signed_getUrlDomain($url)
 	{
 		$domain = '';

@@ -21,39 +21,14 @@
  */
 
 /**
- * Opens Access Origin Via networking Route NPN
- */
-header('Access-Control-Allow-Origin: *');
-header('Origin: *');
-
-error_reporting(E_ALL);
-ini_set('display_errors', true);
-ini_set('log_errors', true);
-ini_set('errors_log', XOOPS_ROOT_PATH . "/errors.log.txt");
-
-/**
- * Validated that Signed is Salted with a Blowfish Encryption Salt!
+ * This is a temporary solution for merging XOOPS 2.0 and 2.2 series
+ * A thorough solution will be available in XOOPS 3.0
+ *
  */
 if (file_exists($blowfish = __DIR__ . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'blowfish-salt.php'))
 	require_once($blowfish);
-if (defined("SIGNED_BLOWFISH_SALT") && constant("SIGNED_BLOWFISH_SALT") != "%%%%%%%%%%%%%%%%%%%%%")
-	chmod($blowfish, 0400);
-elseif (strpos($_SERVER['REQUEST_URI'], 'modules/system/')) {
-	
-}
-elseif (!strpos($_SERVER['REQUEST_URI'], 'signed/admin/salty.php') && 
-		(constant("SIGNED_BLOWFISH_SALT") == "%%%%%%%%%%%%%%%%%%%%%" || !defined("SIGNED_BLOWFISH_SALT"))) {
-	if (is_a($GLOBALS['xoopsUser'], 'XoopsUser'))
-		if ($GLOBALS['xoopsUser']->isAdmin())
-		{
-			$module_handler = xoops_gethandler('module');
-			$signedmod = $module_handler->getByDirname('signed');
-			if (is_a($signedmod, "XoopsModule")) {
-				redirect_header(XOOPS_URL . '/modules/signed/admin/salty.php', 3, _SIGNED_MI_SALTY_NEEDTOBESET);
-				exit(0);
-			}
-		}
-}
+	if (constant("SIGNED_BLOWFISH_SALT") != "%%%%%%%%%%%%%%%%%%%%%")
+		chmod($blowfish, 0400);
 
 $modversion                   = array();
 $modversion['name']           = _SIGNED_MI_MODULE_NAME;
@@ -99,7 +74,6 @@ $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
 $modversion['tables'][0] = "signed_signatures";
 $modversion['tables'][1] = "signed_events";
 $modversion['tables'][2] = "signed_event_links";
-$modversion['tables'][3] = "signed_keiyes";
 
 
 // Templates
@@ -111,26 +85,6 @@ $modversion['templates'][1]['description'] = 'Digital Self Signinf ~ HTML Wrappe
 // Menu
 $modversion['hasMain'] = 1;
 
-//update things
-$modversion['onUpdate'] = 'include/upgrade-module.php';
-
-// Configs categories
-$modversion['configcat']['seo']['name']        		= _SIGNED_MI_CONFCAT_SEO;
-$modversion['configcat']['seo']['description'] 		= _SIGNED_MI_CONFCAT_SEO_DESC;
-$modversion['configcat']['ciphers']['name']        	= _SIGNED_MI_CONFCAT_CIPHERS;
-$modversion['configcat']['ciphers']['description'] 	= _SIGNED_MI_CONFCAT_CIPHERS_DESC;
-$modversion['configcat']['systems']['name']        	= _SIGNED_MI_CONFCAT_SYSTEMS;
-$modversion['configcat']['systems']['description'] 	= _SIGNED_MI_CONFCAT_SYSTEMS_DESC;
-$modversion['configcat']['files']['name']        	= _SIGNED_MI_CONFCAT_FILES;
-$modversion['configcat']['files']['description'] 	= _SIGNED_MI_CONFCAT_FILES_DESC;
-$modversion['configcat']['apis']['name']        	= _SIGNED_MI_CONFCAT_APIS;
-$modversion['configcat']['apis']['description'] 	= _SIGNED_MI_CONFCAT_APIS_DESC;
-$modversion['configcat']['email']['name']        	= _SIGNED_MI_CONFCAT_EMAIL;
-$modversion['configcat']['email']['description'] 	= _SIGNED_MI_CONFCAT_EMAIL_DESC;
-$modversion['configcat']['sms']['name']        		= _SIGNED_MI_CONFCAT_SMS;
-$modversion['configcat']['sms']['description'] 		= _SIGNED_MI_CONFCAT_SMS_DESC;
-
-// Configs
 $modversion['config']   = array();
 $modversion['config'][] = array(
 		'name'        => 'memory_limits',
@@ -138,8 +92,16 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_MEMORY_LIMITS_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'int',
-		'default'     => 396,
-		'category'	  => 'systems'
+		'default'     => 396
+);
+
+$modversion['config'][] = array(
+		'name'        => 'compression',
+		'title'       => '_SIGNED_MI_COMPRESSION',
+		'description' => '_SIGNED_MI_COMPRESSION_DESC',
+		'formtype'    => 'yesno',
+		'valuetype'   => 'int',
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -148,20 +110,18 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_ENCRYPTION_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => false,
-		'category'	  => 'ciphers'
+		'default'     => false
 );
 
-$cryptus_handler = xoops_getmodulehandler('cryptus', 'signed');
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'signedcryptus.php';
 $modversion['config'][] = array(
 		'name'        => 'ciphers',
 		'title'       => '_SIGNED_MI_CIPHERS',
 		'description' => '_SIGNED_MI_CIPHERS_DESC',
-		'formtype'    => 'select_multi',
+		'formtype'    => 'multi_select',
 		'valuetype'   => 'array',
-		'default'     => $cryptus_handler->getAllByTypals(true, array('rsa-openssl')),
-		'options'     => $cryptus_handler->getAllByTypals(false, array('rsa-openssl')),
-		'category'	  => 'ciphers'
+		'default'     => signedCryptusHandler::getInstance()->getAllByTypals(true, array('rsa-openssl')),
+		'options'     => signedCryptusHandler::getInstance()->getAllByTypals(false, array('rsa-openssl'))
 );
 
 $modversion['config'][] = array(
@@ -170,8 +130,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_SSLPEMKEY_PATH_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'ciphers'
+		'default'     => ''
 );
 
 $modversion['config'][] = array(
@@ -180,8 +139,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_USEOCR_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => false,
-		'category'	  => 'ciphers'
+		'default'     => false
 );
 
 $modversion['config'][] = array(
@@ -190,8 +148,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_OCRAPI_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => 'http://ocr.labs.coop',
-		'category'	  => 'ciphers'
+		'default'     => 'http://ocr.labs.coop'
 );
 
 $modversion['config'][] = array(
@@ -200,8 +157,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_HTACCESS_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => false,
-		'category'	  => 'seo'
+		'default'     => false
 );
 
 $modversion['config'][] = array(
@@ -210,8 +166,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_HTACCESS_PATH_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => '/signing',
-		'category'	  => 'seo'
+		'default'     => '/signing'
 );
 
 $modversion['config'][] = array(
@@ -220,8 +175,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_HTACCESS_URL_API_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => XOOPS_URL . '/signer',
-		'category'	  => 'seo'
+		'default'     => XOOPS_URL . '/signer'
 );
 
 
@@ -231,8 +185,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_HTACCESS_EXTENSION_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => '.html',
-		'category'	  => 'seo'
+		'default'     => '.html'
 );
 
 
@@ -242,8 +195,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_TITLE_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => 'Digital Signatures',
-		'category'	  => 'seo'
+		'default'     => 'Digital Signatures'
 );
 
 $modversion['config'][] = array(
@@ -252,8 +204,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_EMAIL_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => $GLOBALS['xoopsConfig']['adminmail'],
-		'category'	  => 'seo'
+		'default'     => $GLOBALS['xoopsConfig']['adminmail']
 );
 
 $modversion['config'][] = array(
@@ -262,8 +213,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_USE_SSL_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => false,
-		'category'	  => 'seo'
+		'default'     => false
 );
 
 $modversion['config'][] = array(
@@ -272,8 +222,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_VERIFY_EMAIL_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'email'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -282,8 +231,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_VERIFY_MOBILE_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => false,
-		'category'	  => 'sms'
+		'default'     => false
 );
 
 $modversion['config'][] = array(
@@ -292,8 +240,7 @@ $modversion['config'][] = array(
     'description' => '_SIGNED_MI_PHPTIMEZONE_DESC',
     'formtype'    => 'text',
     'valuetype'   => 'text',
-    'default'     => 'Australia/Sydney',
-	'category'	  => 'systems'
+    'default'     => 'Australia/Sydney'
 );
 
 $modversion['config'][] = array(
@@ -302,8 +249,7 @@ $modversion['config'][] = array(
     'description' => '_SIGNED_MI_YEARS_NUMBEROF_DESC',
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
-    'default'     => 14,
-	'category'	  => 'systems'
+    'default'     => 14
 );
 
 $modversion['config'][] = array(
@@ -312,8 +258,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_WATERMARK_GIF_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => 'watermark.gif',
-		'category'	  => 'systems'
+		'default'     => 'watermark.gif'
 );
 
 $modversion['config'][] = array(
@@ -322,8 +267,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_WATERMARK_WEIGHT_DESC',
 		'formtype'    => 'textbox',
 		'valuetype'   => 'float',
-		'default'     => 1.25,
-		'category'	  => 'systems'
+		'default'     => 1.25
 );
 
 $modversion['config'][] = array(
@@ -332,8 +276,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_WATERMARK_SCALE_DESC',
 		'formtype'    => 'textbox',
 		'valuetype'   => 'float',
-		'default'     => 3.75,
-		'category'	  => 'systems'
+		'default'     => 3.75
 );
 
 $modversion['config'][] = array(
@@ -342,8 +285,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_WATERMARK_MINOPACITY_DESC',
 		'formtype'    => 'textbox',
 		'valuetype'   => 'int',
-		'default'     => 32,
-		'category'	  => 'systems'
+		'default'     => 32
 );
 
 $modversion['config'][] = array(
@@ -352,8 +294,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_WATERMARK_MAXOPACITY_DESC',
 		'formtype'    => 'textbox',
 		'valuetype'   => 'int',
-		'default'     => 82,
-		'category'	  => 'systems'
+		'default'     => 82
 );
 
 $modversion['config'][] = array(
@@ -362,8 +303,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_ERRORS_LOGGED_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => false,
-		'category'	  => 'systems'
+		'default'     => false
 );
 
 $modversion['config'][] = array(
@@ -372,8 +312,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_ERRORS_DISPLAYED_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => false,
-		'category'	  => 'systems'
+		'default'     => false
 );
 
 $modversion['config'][] = array(
@@ -383,8 +322,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'int',
 		'options' 	  => array('All Errors' => E_ALL, 'Critical Only' => E_ERROR, 'Notices Only' => E_NOTICE, 'Warnings Only' => E_WARNING), 
-		'default'     => E_ERROR,
-		'category'	  => 'systems'
+		'default'     => E_ERROR
 );
 
 $modversion['config'][] = array(
@@ -393,8 +331,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_DISCOVERABLE_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -404,8 +341,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
 		'options' 	  => array(_SIGNED_MI_FORMAT_JSON => 'json', _SIGNED_MI_FORMAT_SERIAL => 'serial', _SIGNED_MI_FORMAT_XML => 'xml'),
-		'default'     => 'json',
-		'category'	  => 'files'
+		'default'     => 'json'
 );
 
 $modversion['config'][] = array(
@@ -415,8 +351,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
 		'options' 	  => array(_SIGNED_MI_FORMAT_JSON => 'json', _SIGNED_MI_FORMAT_SERIAL => 'serial', _SIGNED_MI_FORMAT_XML => 'xml'),
-		'default'     => 'json',
-		'category'	  => 'files'
+		'default'     => 'json'
 );
 
 $modversion['config'][] = array(
@@ -426,8 +361,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
 		'options' 	  => array(_SIGNED_MI_FORMAT_JSON => 'json', _SIGNED_MI_FORMAT_SERIAL => 'serial', _SIGNED_MI_FORMAT_XML => 'xml'),
-		'default'     => 'json',
-		'category'	  => 'files'
+		'default'     => 'json'
 );
 
 $modversion['config'][] = array(
@@ -437,8 +371,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
 		'options' 	  => array(_SIGNED_MI_FORMAT_JSON => 'json', _SIGNED_MI_FORMAT_SERIAL => 'serial', _SIGNED_MI_FORMAT_XML => 'xml'),
-		'default'     => 'json',
-		'category'	  => 'files'
+		'default'     => 'json'
 );
 
 $modversion['config'][] = array(
@@ -448,8 +381,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
 		'options' 	  => array(_SIGNED_MI_FORMAT_JSON => 'json', _SIGNED_MI_FORMAT_SERIAL => 'serial', _SIGNED_MI_FORMAT_XML => 'xml'),
-		'default'     => 'json',
-		'category'	  => 'files'
+		'default'     => 'json'
 );
 
 $modversion['config'][] = array(
@@ -458,8 +390,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_LOGOWIDTH_DESC',
 		'formtype'    => 'textbox',
 		'valuetype'   => 'int',
-		'default'     => 320,
-		'category'	  => 'systems'
+		'default'     => 320
 );
 
 $modversion['config'][] = array(
@@ -468,8 +399,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_LOGOHEIGHT_DESC',
 		'formtype'    => 'textbox',
 		'valuetype'   => 'int',
-		'default'     => 320,
-		'category'	  => 'systems'
+		'default'     => 320
 );
 
 $modversion['config'][] = array(
@@ -478,8 +408,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_PHOTOWIDTH_DESC',
 		'formtype'    => 'textbox',
 		'valuetype'   => 'int',
-		'default'     => 340,
-		'category'	  => 'systems'
+		'default'     => 340
 );
 
 $modversion['config'][] = array(
@@ -488,8 +417,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_PHOTOHEIGHT_DESC',
 		'formtype'    => 'textbox',
 		'valuetype'   => 'int',
-		'default'     => 375,
-		'category'	  => 'systems'
+		'default'     => 375
 );
 
 $modversion['config'][] = array(
@@ -498,8 +426,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_USER_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'apis'
+		'default'     => ''
 ); 
 
 $modversion['config'][] = array(
@@ -509,8 +436,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
 		'options' 	  => array(_SIGNED_MI_FORMAT_JSON => 'json', _SIGNED_MI_FORMAT_SERIAL => 'serial', _SIGNED_MI_FORMAT_XML => 'xml'),
-		'default'     => 'json',
-		'category'	  => 'apis'
+		'default'     => 'json'
 );
 
 $modversion['config'][] = array(
@@ -519,8 +445,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_ENABLED_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -529,8 +454,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_SIGN_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -539,8 +463,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_VERIFY_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 
@@ -550,8 +473,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_VERIFICATION_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -560,8 +482,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_SITES_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 
@@ -571,8 +492,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_LANGUAGES_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -581,8 +501,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_CLASSES_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -591,8 +510,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_DESCRIPTIONS_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -601,8 +519,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_ENUMERATORS_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -611,8 +528,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_FIELDS_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -621,8 +537,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_FIELDTYPES_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -631,8 +546,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_IDENTIFICATIONS_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -641,8 +555,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_PROMPTS_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -651,8 +564,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_PROVIDERS_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -661,8 +573,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_SIGNATURES_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -671,8 +582,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_VALIDATIONS_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -681,8 +591,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_PROCESSES_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -691,8 +600,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_LANGAUGE_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -701,8 +609,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_STATES_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -711,8 +618,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_REQUEST_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -721,8 +627,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_API_BANNED_DESC',
 		'formtype'    => 'yesno',
 		'valuetype'   => 'int',
-		'default'     => true,
-		'category'	  => 'apis'
+		'default'     => true
 );
 
 $modversion['config'][] = array(
@@ -731,8 +636,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_BANNING_COOKIE_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => 'signed-xoops-pointers',
-		'category'	  => 'systems'
+		'default'     => 'signed-xoops-pointers'
 );
 
 
@@ -742,8 +646,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_EMAIL_FROMADDR_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => $GLOBALS['xoopsConfig']['adminmail'],
-		'category'	  => 'email'
+		'default'     => $GLOBALS['xoopsConfig']['adminmail']
 );
 
 $modversion['config'][] = array(
@@ -752,8 +655,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_EMAIL_FROMNAME_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => $GLOBALS['xoopsConfig']['sitename'] . ' Digital Signatures',
-		'category'	  => 'email'
+		'default'     => $GLOBALS['xoopsConfig']['sitename'] . ' Digital Signatures'
 );
 
 $modversion['config'][] = array(
@@ -763,8 +665,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
 		'options'     => array( _SIGNED_MI_OPTION_EMAIL_PRIORITY_HIGH => 'high', _SIGNED_MI_OPTION_EMAIL_PRIORITY_NORMAL => 'normal', _SIGNED_MI_OPTION_EMAIL_PRIORITY_LOW => 'low'),
-		'default'     => 'high',
-		'category'	  => 'email'
+		'default'     => 'high'
 );
 
 $modversion['config'][] = array(
@@ -774,8 +675,7 @@ $modversion['config'][] = array(
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
 		'options'     => array('PHP Mail' => 'mail','SMTP Authenticated' => 'smtp','Sendmail' => 'sendmail'),
-		'default'     => 'mail',
-		'category'	  => 'email'
+		'default'     => 'mail'
 );
 
 $modversion['config'][] = array(
@@ -784,8 +684,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_EMAIL_SMTP_HOST_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'email'
+		'default'     => ''
 );
 
 $modversion['config'][] = array(
@@ -794,8 +693,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_EMAIL_SMTP_USER_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'email'
+		'default'     => ''
 );
 
 $modversion['config'][] = array(
@@ -804,8 +702,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_EMAIL_SMTP_PASS_DESC',
 		'formtype'    => 'password',
 		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'email'
+		'default'     => ''
 );
 
 $modversion['config'][] = array(
@@ -814,8 +711,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_EMAIL_SENDMAIL_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => '/usr/sbin/sendmail',
-		'category'	  => 'email'
+		'default'     => '/usr/sbin/sendmail'
 );
 
 $modversion['config'][] = array(
@@ -824,8 +720,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_EMAIL_QUEUED_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'int',
-		'default'     => 172800,
-		'category'	  => 'email'
+		'default'     => 172800
 );
 
 $modversion['config'][] = array(
@@ -834,10 +729,10 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_SMS_METHOD_DESC',
 		'formtype'    => 'select',
 		'valuetype'   => 'text',
-		'options'     => array('Only eMail Services' => 'mail', 'Cardboardfish SMS' => 'cardboardfish', "SIP/VOIP Services" => 'sip'),
-		'default'     => 'mail',
-		'category'	  => 'sms'
+		'options'     => array('Cardboardfish SMS' => 'cardboardfish'),
+		'default'     => 'mail'
 );
+
 
 $modversion['config'][] = array(
 		'name'        => 'sms_fromnumber',
@@ -845,8 +740,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_SMS_FROMNUMBER_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'int',
-		'default'     => 61000000000,
-		'category'	  => 'sms'
+		'default'     => 61000000000
 );
 
 $modversion['config'][] = array(
@@ -855,8 +749,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_SMS_CARDBOARDFISH_URI_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => 'http://sms1.cardboardfish.com:9001/HTTPSMS?',
-		'category'	  => 'sms'
+		'default'     => 'http://sms1.cardboardfish.com:9001/HTTPSMS?'
 );
 
 $modversion['config'][] = array(
@@ -865,8 +758,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_SMS_CARDBOARDFISH_USER_DESC',
 		'formtype'    => 'text',
 		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'sms'
+		'default'     => ''
 );
 
 $modversion['config'][] = array(
@@ -875,38 +767,7 @@ $modversion['config'][] = array(
 		'description' => '_SIGNED_MI_SMS_CARDBOARDFISH_PASS_DESC',
 		'formtype'    => 'password',
 		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'sms'
-);
-
-$modversion['config'][] = array(
-		'name'        => 'sip_server',
-		'title'       => '_SIGNED_MI_SMS_SIP_SERVER',
-		'description' => '_SIGNED_MI_SMS_SIP_SERVER_DESC',
-		'formtype'    => 'text',
-		'valuetype'   => 'text',
-		'default'     => 'voip.dodo.com.au',
-		'category'	  => 'sms'
-);
-
-$modversion['config'][] = array(
-		'name'        => 'sip_user',
-		'title'       => '_SIGNED_MI_SMS_SIP_USER',
-		'description' => '_SIGNED_MI_SMS_SIP_USER_DESC',
-		'formtype'    => 'text',
-		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'sms'
-);
-
-$modversion['config'][] = array(
-		'name'        => 'sip_pass',
-		'title'       => '_SIGNED_MI_SMS_SIP_PASS',
-		'description' => '_SIGNED_MI_SMS_SIP_PASS_DESC',
-		'formtype'    => 'password',
-		'valuetype'   => 'text',
-		'default'     => '',
-		'category'	  => 'sms'
+		'default'     => ''
 );
 
 ?>

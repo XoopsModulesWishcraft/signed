@@ -181,7 +181,7 @@ p {
 <?php 
 	if (isset($_POST['seed']))
 	{
-		//ini_set('display_errors', true'); ini_set('log_errors', true); ini_set('error_log', XOOPS_ROOT_PATH . DIRETORY_SEPARATOR . 'php-errors.txt'); error_reporting(E_ALL);
+		//;
 		class xcp
 		{
 		

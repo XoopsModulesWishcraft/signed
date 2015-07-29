@@ -16,26 +16,6 @@ CREATE TABLE `signed_signatures` (
   PRIMARY KEY  (`signid`)
 ) ENGINE=INNODB;
 
-CREATE TABLE `signed_keiyes` (
-  `keiyeid`      mediumint(16) unsigned  NOT NULL auto_increment,
-  `typal`   	enum('serial', 'xml', 'json', 'raw') NOT NULL default 'raw',
-  `path`      	varchar(200)            NOT NULL default '',
-  `filename`   	varchar(200)            NOT NULL default '',
-  `seal-md5`    varchar(32)             NOT NULL default '',
-  `open-md5`    varchar(32)             NOT NULL default '',
-  `algorithm`   varchar(48)             NOT NULL default '',
-  `cipher`     	varchar(48)             NOT NULL default '',
-  `key`     	tinytext,
-  `last-algorithm`   varchar(48)             NOT NULL default '',
-  `last-cipher`     	varchar(48)             NOT NULL default '',
-  `last-key`     	tinytext,
-  `bytes`   	int(24) unsigned     	NOT NULL default '0',
-  `created`   	int(13) unsigned     	NOT NULL default '0',
-  `accessed`   	int(13) unsigned     	NOT NULL default '0',
-  PRIMARY KEY  (`keiyeid`),
-  KEY `indexer` (`path`(14), `filename`(14), `seal-md5`(12))
-) ENGINE=INNODB;
-
 CREATE TABLE `signed_events` (
   `eventid`        	mediumint(19) unsigned  NOT NULL auto_increment,
   `system`      	varchar(128)            NOT NULL default '',

@@ -101,7 +101,7 @@ class signedCryptusRsaOpensll extends signedCryptusLibraries
 	 */
 	function getAlgorithms()
 	{
-		return array(basename(__DIR__)	=>	array(	'rsa-ssl' => array() ));
+		return array(dirname(__DIR__)	=>	array(	'rsa-ssl' => array() ));
 	}
 	
 	/**
@@ -114,7 +114,7 @@ class signedCryptusRsaOpensll extends signedCryptusLibraries
 		$confighandler = xoops_gethandler('config');
 		$signed = $modulehandler->getByDirname('signed');
 		$configs = $confighandler->getConfigLists($signed->getVar('mid'));
-		return array(	basename(__DIR__) . '.rsa-ssl' => array("keyen"=>"cert", "cert" => $configs['pem-key']));
+		return array(	dirname(__DIR__) . '.rsa-ssl' => array("keyen"=>"cert", "cert" => $configs['pem-key']));
 	}	
 	
 	/**

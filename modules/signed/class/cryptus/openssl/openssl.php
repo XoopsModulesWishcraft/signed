@@ -103,7 +103,7 @@ class signedCryptusOpensll extends signedCryptusLibraries
 	 */
 	function getAlgorithms()
 	{
-		return array(basename(__DIR__)	=>	array(	'openssl' => openssl_get_cipher_methods() ));
+		return array(dirname(__DIR__)	=>	array(	'openssl' => openssl_get_cipher_methods() ));
 	}
 	
 	/**
@@ -131,7 +131,7 @@ class signedCryptusOpensll extends signedCryptusLibraries
 			foreach($this->getAlgorithms() as $folder => $algorithms)
 				foreach($algorithms as $id => $cipher)
 					if (($bitz == openssl_cipher_iv_length($cipher) * 8) > 0 )
-						$extensions[basename(__DIR__) . '.' . ".$bitz".str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $cipher)))] = array("keyen"=>$bitz, "cipher" => $cipher, "salt" => SIGNED_BLOWFISH_SALT);
+						$extensions[dirname(__DIR__) . '.' . ".$bitz".str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $cipher)))] = array("keyen"=>$bitz, "cipher" => $cipher, "salt" => SIGNED_BLOWFISH_SALT);
 		return $extensions;
 	}	
 

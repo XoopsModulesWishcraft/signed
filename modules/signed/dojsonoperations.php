@@ -18,22 +18,14 @@
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */
-
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'common.php';
-$GLOBALS['xoopsLogger']->activated = false;
-/**
- * Opens Access Origin Via networking Route NPN
- */
-header('Access-Control-Allow-Origin: *');
+header('Content-type: application/json');
 header('Origin: *');
-
-/**
- * Turns of GZ Lib Compression for Document Incompatibility
- */
+header('Access-Control-Allow-Origin: *');
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'common.php';
 ini_set("zlib.output_compression", 'Off');
 ini_set("zlib.output_compression_level", -1);
+$GLOBALS['xoopsLogger']->activated = false;
 
-header('Content-type: application/json');
 set_time_limit(120);
 $passed = true;
 if (isset($_REQUEST['fields-typal'])) {

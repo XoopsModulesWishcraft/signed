@@ -19,10 +19,12 @@
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */
-
+header('Content-type: application/json');
 define('_SIGNED_EVENT_SYSTEM', 'api');
 define('_SIGNED_EVENT_TYPE', 'help');
 require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'header.php';
+ini_set("zlib.output_compression", 'Off');
+ini_set("zlib.output_compression_level", -1);
 require dirname(__FILE__) . _DS_ . 'validate.php';
 require _PATH_TEMPLATES . _DS_ . 'common' . _DS_ . 'api.php';
 require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'footer.php';

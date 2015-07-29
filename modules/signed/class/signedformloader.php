@@ -22,36 +22,36 @@
 
 xoops_load('XoopsFormLoader');
 
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('Form') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('ThemeForm') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('SimpleForm') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormElement') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormElementTray') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormLabel') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormCheckBox') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormPassword') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormButton') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormButtonTray') . '.php'; // To be cleaned
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormHidden') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormFile') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormRadio') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormRadioYN') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormSelect') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormSelectMatchOption') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormSelectCountry') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormSelectTimeZone') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormSelectEditor') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormSelectEnumerator') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormSelectMonths') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormSelectYears') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormText') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormTextArea') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormTextDateSelect') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormDhtmlTextArea') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormDateTime') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormHiddenToken') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormColorPicker') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormCaptcha') . '.php';
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'signedform' . DIRECTORY_SEPARATOR . strtolower('FormEditor') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('Form') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('ThemeForm') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('SimpleForm') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormElement') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormElementTray') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormLabel') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormCheckBox') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormPassword') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormButton') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormButtonTray') . '.php'; // To be cleaned
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormHidden') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormFile') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormRadio') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormRadioYN') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormSelect') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormSelectMatchOption') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormSelectCountry') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormSelectTimeZone') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormSelectEditor') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormSelectEnumerator') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormSelectMonths') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormSelectYears') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormText') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormTextArea') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormTextDateSelect') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormDhtmlTextArea') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormDateTime') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormHiddenToken') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormColorPicker') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormCaptcha') . '.php';
+include_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedform' . _DS_ . strtolower('FormEditor') . '.php';
 
 ?>

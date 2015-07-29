@@ -135,11 +135,13 @@ if (!class_exists('signed_form_object'))
 		
 		function verify($mode = '', $variables = array(), $step = '')
 		{
-			
 			if (isset($_POST['fields-typal']) && !empty($_POST['fields-typal']))
 				$typal = $_POST['fields-typal'];
 			else
 				$typal = $mode;
+
+			if ($GLOBALS['security']->check(true, $variables['SIGNED_TOKEN_REQUEST'])==false)
+				return false;
 
 			$fields = signedArrays::getInstance()->returnKeyed($typal, 'getFieldsArray');
 			switch(typal) {
@@ -155,26 +157,6 @@ if (!class_exists('signed_form_object'))
 					break;
 				default:
 						
-			}
-			
-			if (isset($variables['fields-required']))
-			{
-				foreach($variables['fields-required'] as $key => $field)
-				{
-					if (!in_array($fields[$field]['type'], array('images', 'logos', 'photos')))
-						if (empty($variables[$typal][$key]) || strlen($variables[$typal][$key]) == 0) {
-						$GLOBALS['errors'][] = "The field titled: <em><strong>" . $fields[$key]['title'] . '</strong></em> ~ is required to continue to the next step!';
-					}
-				}
-			}
-			if (isset($variables['upload-fields-required']))
-			{
-				foreach($variables['upload-fields-required'] as $key => $field)
-				{
-					if (empty($_FILES[$typal . '-' . $key]['tmp_name']) && $_FILES[$typal . '-' . $key]['size'] == 0) {
-						$GLOBALS['errors'][] = "The image/file upload field titled: <em><strong>" . $fields[$key]['title'] . '</strong></em> ~ is required to continue to the next step!';
-					}
-				}
 			}
 			
 			$validations = signedArrays::getInstance()->returnKeyed($typal, "getValidationsArray");
@@ -198,7 +180,26 @@ if (!class_exists('signed_form_object'))
 					}	
 				}
 			}
-			
+			if (isset($variables['fields-required']))
+			{
+				foreach($variables['fields-required'] as $key => $field) 
+				{
+					if (!in_array($fields[$field]['type'], array('images', 'logo', 'photo')))
+						if (empty($variables[$typal][$key]) || strlen($variables[$typal][$key]) == 0) {
+							$GLOBALS['errors'][] = "The field titled: <em><strong>" . $fields[$key]['title'] . '</strong></em> ~ is required to continue to the next step!';
+						}				
+				}
+			}
+			if (isset($variables['upload-fields-required']))
+			{
+				foreach($variables['upload-fields-required'] as $key => $field)
+				{
+					if (empty($_FILES[$typal . '-' . $key]['tmp_name']) && $_FILES[$typal . '-' . $key]['size'] == 0) {
+						$GLOBALS['errors'][] = "The image/file upload field titled: <em><strong>" . $fields[$key]['title'] . '</strong></em> ~ is required to continue to the next step!';
+					}
+				}
+			}
+				
 			$fields = signedArrays::getInstance()->returnKeyed($typal, 'getFieldsArray');	
 			$package = array();
 			foreach($fields as $name => $field) {

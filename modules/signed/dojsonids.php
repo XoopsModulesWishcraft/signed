@@ -19,22 +19,14 @@
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */
 
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'common.php';
-$GLOBALS['xoopsLogger']->activated = false;
-/**
- * Opens Access Origin Via networking Route NPN
- */
-header('Access-Control-Allow-Origin: *');
+header('Content-type: application/json');
 header('Origin: *');
-
-/**
- * Turns of GZ Lib Compression for Document Incompatibility
- */
+header('Access-Control-Allow-Origin: *');
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'common.php';
 ini_set("zlib.output_compression", 'Off');
 ini_set("zlib.output_compression_level", -1);
-
+$GLOBALS['xoopsLogger']->activated = false;
 ob_end_flush();
-header('Content-type: application/json');
 set_time_limit(120);
 if (signedCiphers::getInstance()->getHash(_URL_ROOT.date('Ymdh').session_id())==$_REQUEST['passkey']) {
 	$ids = signedArrays::getInstance()->returnKeyed($_REQUEST['signature_mode'], 'getIdentificationsArray');

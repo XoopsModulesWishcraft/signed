@@ -25,6 +25,9 @@
 	
 	require_once(dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR . 'mainfile.php');
 	
+	header('Origin: *');
+	header('Access-Control-Allow-Origin: *');
+		
 	if (!isset($_SESSION["signed"]['configurations']) || empty($_SESSION["signed"]['configurations']))
 	{
 		$module_handler = xoops_gethandler('module');
@@ -127,5 +130,5 @@
 			unset($_SESSION["signed"]['unlink'][$key]);
 		}
 	}
-	
+
 ?>

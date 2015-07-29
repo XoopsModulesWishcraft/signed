@@ -123,7 +123,7 @@ class signedCryptusAesctr extends signedCryptusLibraries
 	 */
 	function getAlgorithms()
 	{
-		return array(basename(__DIR__));
+		return array(dirname(__DIR__));
 	}
 	
 	/**
@@ -132,9 +132,9 @@ class signedCryptusAesctr extends signedCryptusLibraries
 	 */
 	function getFileExtensions()
 	{
-		return array(		basename(__DIR__) . '.128' => array("keyen"=>128, "salt" => SIGNED_BLOWFISH_SALT), 
-							basename(__DIR__) . '.192' => array("keyen"=>192, "salt" => SIGNED_BLOWFISH_SALT), 
-							basename(__DIR__) . '.256' => array("keyen"=>256, "salt" => SIGNED_BLOWFISH_SALT));
+		return array(		dirname(__DIR__) . '.128' => array("keyen"=>128, "salt" => SIGNED_BLOWFISH_SALT), 
+							dirname(__DIR__) . '.192' => array("keyen"=>192, "salt" => SIGNED_BLOWFISH_SALT), 
+							dirname(__DIR__) . '.256' => array("keyen"=>256, "salt" => SIGNED_BLOWFISH_SALT));
 	}
 	
 	/**

@@ -192,7 +192,7 @@ p {
 <?php 
 	if (isset($_POST['charstring'])&&isset($_POST['seed'])&&isset($_POST['length']))
 	{
-		//ini_set('display_errors', true'); ini_set('log_errors', true); ini_set('error_log', XOOPS_ROOT_PATH . DIRETORY_SEPARATOR . 'php-errors.txt'); error_reporting(E_ALL);
+		//;
 		require ('class/xcp.class.php');
 		set_time_limit(120);
 		$crc = new xcp($_POST['charstring'], $_POST['seed'], $_POST['length']);

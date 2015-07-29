@@ -19,7 +19,7 @@
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
  */
-	
+
 	require_once(dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR . 'mainfile.php');
 	
 	//Signee Details
@@ -52,5 +52,5 @@
 	define('_SIGNED_CARDBOARDFISH_API_URL', $_SESSION["signed"]['configurations']['cardboardfish_uri']);
 	define('_SIGNED_CARDBOARDFISH_API_USERNAME', $_SESSION["signed"]['configurations']['cardboardfish_user']);
 	define('_SIGNED_CARDBOARDFISH_API_PASSWORD', $_SESSION["signed"]['configurations']['cardboardfish_pass']);	
-	
+
 ?>

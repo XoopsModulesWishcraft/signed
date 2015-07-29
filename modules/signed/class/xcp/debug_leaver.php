@@ -184,7 +184,7 @@ p {
 <?php 
 	if (isset($_POST['charstring'])&&isset($_POST['seed'])&&isset($_POST['length']))
 	{
-		//ini_set('display_errors', true'); ini_set('log_errors', true); ini_set('error_log', XOOPS_ROOT_PATH . DIRETORY_SEPARATOR . 'php-errors.txt'); error_reporting(E_ALL);
+		//;
 		class xcp
 		{
 		
@@ -202,7 +202,7 @@ p {
 			$enum_calc = $enumerator->enum_calc(substr($_POST['charstring'],$i,1),$enum_calc);
 		}
 		
-		//ini_set('display_errors', true'); ini_set('log_errors', true); ini_set('error_log', XOOPS_ROOT_PATH . DIRETORY_SEPARATOR . 'php-errors.txt'); error_reporting(E_ALL);
+		//;
 		
 		$crc = new xcp_leaver($enum_calc, $xcp_base, $_POST['length']);
 		echo "Milliseconds: ".(abs((time()+microtime())-$mt)*1000)."\n";
