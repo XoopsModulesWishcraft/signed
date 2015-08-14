@@ -10,14 +10,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
  * @subpackage		language
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
+ *
  */
 
 	//Control Panel menus
@@ -28,11 +37,11 @@
 	
 	
 	// Module Definitions
-	define('_SIGNED_MI_MODULE_NAME', 'Self Signed');
-	define('_SIGNED_MI_MODULE_VERSION', '1.14');
-	define('_SIGNED_MI_MODULE_DESCRIPTION', 'Final Major Release');
-	define('_SIGNED_MI_MODULE_AUTHOR', 'Simon Roberts aka. Leshy Cipherhouse <leshy@slams.io>');
-	define('_SIGNED_MI_MODULE_CREDITS', 'cipher, MyNamesNot, Wishcraft');
+	define('_SIGNED_MI_MODULE_NAME', 'Digitally Self Signed');
+	define('_SIGNED_MI_MODULE_VERSION', '2.2');
+	define('_SIGNED_MI_MODULE_DESCRIPTION', 'Release Candidate');
+	define('_SIGNED_MI_MODULE_AUTHOR', 'Simon Antony Roberts <wishcraft@users.sourceforge.net>');
+	define('_SIGNED_MI_MODULE_CREDITS', 'Wishcraft');
 	
 	// Module Preferences
 	define('_SIGNED_MI_MEMORY_LIMITS', 'Number of Megabytes of memory to allocate');
@@ -179,7 +188,7 @@
 	define('_SIGNED_MI_SMS_CARDBOARDFISH_PASS_DESC', '');
 	
 	
-	// Additions in version 2.07
+	// Additions in version 2.1.9
 	// Module Preferences
 	define('_SIGNED_MI_COMPRESSION', 'Enable Data Compression of File Store System');
 	define('_SIGNED_MI_COMPRESSION_DESC', 'This currently uses mysql ~ compress(); decompress() in an open select statement!');
@@ -193,5 +202,17 @@
 	define('_SIGNED_MI_USEOCR_DESC', '');
 	define('_SIGNED_MI_OCRAPI', 'Path for the Online OCR API');
 	define('_SIGNED_MI_OCRAPI_DESC', '');
+	
+	
+	// Additions in version 2.2
+	// Module Preferences
+	define("_SIGNED_MI_REDIRECT_SALTYGENNEEDED","You need to generate your blowfish salt encryption key, or recover your old one!<br/><br/>Redirecting you to the wizard for this!");
+	define('_SIGNED_MI_SIP_SERVER', 'Internal Phone SIP Network Server');
+	define('_SIGNED_MI_SIP_SERVER_DESC', '');
+	define('_SIGNED_MI_SIP_USER', 'SIP Network Username');
+	define('_SIGNED_MI_SIP_USER_DESC', '');
+	define('_SIGNED_MI_SIP_PASS', 'SIP Network Password');
+	define('_SIGNED_MI_SIP_PASS_DESC', '');
+	define('_SIGNED_MI_REDIRECT_HEADERSENT', 'Headers Sent unable to redirect with Location ~ using HTML Redirect Instead<br/>Please wait a momemt!');
 	
 ?>

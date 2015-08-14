@@ -10,14 +10,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
  * @subpackage		class
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
+ *
  */
 
 
@@ -33,7 +42,7 @@ include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'xmlwrapper.php';
 /**
  * 
  * @author Simon Roberts <simon@labs.coop>
- * @author Leshy Cipherhouse <leshy@slams.io>
+ * @author Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
  *
  */
 class signedStorage extends signedObject
@@ -370,7 +379,7 @@ class signedStorage extends signedObject
 
 	
 	/**
-	 * 
+	 *
 	 * @param string $filename
 	 * @return boolean|string
 	 */
@@ -378,14 +387,26 @@ class signedStorage extends signedObject
 	{
 		if (!file_exists($filename))
 			return false;
+	
 		$data = file_get_contents($filename);
+		$file = basename($filename);
+		$path = str_replace(array($file, XOOPS_VAR_PATH), "", $filename);
+		$keiye_handler = xoops_getmodulehandler('keiyes', 'signed');
+		$results = $keiye_handler->retieveKeiye($file, $path);
+		$extension = $results['algorithm'].'.'.$results['cipher'];
+		if (!empty($extension) && $extension != '.')
+		{
+			$cryptus_handler = xoops_getmodulehandler('cryptus', 'signed');
+			$data = $cryptus_handler->cryptolibs->decrypt($extension, $data, $results['key']);
+		}
+	
 		if ($GLOBALS['logger'] = signedLogger::getInstance())
 			$GLOBALS['logger']->logBytes(strlen($data), 'io-read');
 		return $data;
 	}
 	
 	/**
-	 * 
+	 *
 	 * @param string $content
 	 * @param string $filename
 	 * @return boolean
@@ -394,17 +415,79 @@ class signedStorage extends signedObject
 	{
 		if (file_exists($filename))
 			unlink($filename);
-		
+	
 		if (empty($content))
 			return false;
-
-		$f = fopen($filename, 'w');
-		fwrite($f, $content, strlen($content));
-		fclose($f);
-		
-		if ($GLOBALS['logger'] = signedLogger::getInstance())
-			$GLOBALS['logger']->logBytes(strlen($content), 'io-write');
-		
+	
+		$file = basename($filename);
+		$path = str_replace(array($file, XOOPS_VAR_PATH), "", $filename);
+		$keiye_handler = xoops_getmodulehandler('keiyes', 'signed');
+		$algorithm = '';
+		$cipher = '';
+		$key = '';
+		$sealmd5 = $openmd5 = md5($content);
+		if ($_SESSION['signed']['encryption'])
+		{
+			$cryptus_handler = xoops_getmodulehandler('cryptus', 'signed');
+			$parts = explode(".", $ext = $cryptus_handler->getRandomExtension());
+			$bitz = $cryptus_handler->cryptolibs->getKeysBitz();
+			$keyfunc = $cryptus_handler->cryptolibs->kieyeFunc();
+			$key = $cryptus_handler->cryptolibs->$keyfunc(sha1($content).md5($content), SIGNED_BLOWFISH_SALT, $bitz[$ext], true);
+			$algorithm = $parts[0];
+			unset($parts[0]);
+			$cipher = implode('.', $parts);
+			$openmd5 = md5($content);
+			$sealmd5 = md5($content = $cryptus_handler->cryptolibs->encrypt($ext, $content, $key));
+		}
+	
+		if (file_put_contents($filename, $content, false))
+		{
+			$keiye_handler->lodgeKey($file, $path, $algoritm, $cipher, $key, $sealmd5, $openmd5, filesize($filename));
+			if ($GLOBALS['logger'] = signedLogger::getInstance())
+				$GLOBALS['logger']->logBytes(strlen($content), 'io-write');
+		}
 		return $filename;
+	}
+	
+	
+	/** function getURL()
+	 *
+	 * 	cURL Routine
+	 *  @return 		string()
+	 */
+	public static function getURL($uri = '', $timeout = 17, $connectout = 28, $post_data = array(), $getheaders = false)
+	{
+		if (!function_exists("curl_init"))
+		{
+			return file_get_contents($uri);
+		}
+		if (!$uiol = curl_init($uri)) {
+			return false;
+		}
+		curl_setopt($uiol, CURLOPT_POST, (count($post_data)==0?false:true));
+		if (count($post_data)!=0)
+			curl_setopt($uiol, CURLOPT_POSTFIELDS, http_build_query($post_data));
+		curl_setopt($uiol, CURLOPT_CONNECTTIMEOUT, $connectout);
+		curl_setopt($uiol, CURLOPT_TIMEOUT, $timeout);
+		curl_setopt($uiol, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($uiol, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($uiol, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($uiol, CURLOPT_VERBOSE, $getheaders);
+		curl_setopt($uiol, CURLOPT_HEADER, $getheaders);
+	
+		/**
+		 * Execute Curl Call
+		 * @var string
+		 */
+		$response = curl_exec($uiol);
+		if ($getheaders==true) {
+			$infos = curl_getinfo($uiol);
+			$header = substr($response, 0, curl_getinfo($uiol, CURLINFO_HEADER_SIZE));
+			$data = substr($response, curl_getinfo($uiol, CURLINFO_HEADER_SIZE));
+			curl_close($uiol);
+			return array('info'=>$infos, 'header' =>$header, 'data' => $data);
+		}
+		curl_close($uiol);
+		return $response;
 	}
 }

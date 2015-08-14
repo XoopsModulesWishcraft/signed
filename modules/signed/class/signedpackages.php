@@ -10,14 +10,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
  * @subpackage		class
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
+ *
  */
 
 
@@ -320,7 +329,7 @@ class signedPackages extends signedObject
 	 */
 	function lodgeCallbackSessions($serial = '', $type = ''){
 		if (file_exists($file = _PATH_REPO_SIGNED . DIRECTORY_SEPARATOR . $serial . '.xml')) {
-			$signed = XML2Array::createArray(file_get_contents($file));
+			$signed = XML2Array::createArray(signedArrays::getFileContents($file));
 		} else {
 			$signed = array('binded' => array());
 		}
@@ -338,7 +347,7 @@ class signedPackages extends signedObject
 					case 'update':
 						if (!$callbacks = signedCache::read('callback-calls'))
 							$callbacks = array();
-						$resource = XML2Array::createArray(file_get_contents(_PATH_REPO_SIGNATURES . DIRECTORY_SEPARATOR . $serial . '.xml'));
+						$resource = XML2Array::createArray(signedArrays::getFileContents(_PATH_REPO_SIGNATURES . DIRECTORY_SEPARATOR . $serial . '.xml'));
 						$callbacks[] = array('type' => 'update', 'destination' => $values['callback'], 'package' => $resource['resources']['signature'], 'expired' => false, 'updated' => true);
 						signedCache::write('callback-calls', $callbacks, 3600*24*7*4*24);
 						break;
@@ -557,12 +566,12 @@ class signedPackages extends signedObject
 		$_SESSION["signed"]['package']['signature']['signee']['name'] = _SIGNED_TITLE;
 		$_SESSION["signed"]['package']['signature']['signee']['email'] = _SIGNED_EMAIL;
 		$_SESSION["signed"]['package']['signature']['signee']['netbios'] = strtolower($_SERVER["HTTP_HOST"]);
-		$_SESSION["signed"]['package']['signature']['signee']['ip'] = json_decode(file_get_contents("http://lookups.labs.coop/v1/country/".$_SERVER["SERVER_ADDR"]."/json.api"), true);
+		$_SESSION["signed"]['package']['signature']['signee']['ip'] = json_decode(signedArrays::getFileContents("http://lookups.labs.coop/v1/country/".$_SERVER["SERVER_ADDR"]."/json.api"), true);
 		$_SESSION["signed"]['package']['signature']['signee']['signed'] = microtime(true);
 		$_SESSION["signed"]['package']['signature']['signer']['name'] = $_SESSION["signed"]['package']['personal']['name'];
 		$_SESSION["signed"]['package']['signature']['signer']['email'] = $_SESSION["signed"]['package']['personal']['email'];
 		$_SESSION["signed"]['package']['signature']['signer']['netbios'] = $netbios = gethostbyaddr($ip = signedSecurity::getInstance()->getIP(true));
-		$_SESSION["signed"]['package']['signature']['signer']['ip'] = json_decode(file_get_contents("http://lookups.labs.coop/v1/country/".signedSecurity::getInstance()->getIP(true)."/json.api"), true);
+		$_SESSION["signed"]['package']['signature']['signer']['ip'] = json_decode(signedArrays::getFileContents("http://lookups.labs.coop/v1/country/".signedSecurity::getInstance()->getIP(true)."/json.api"), true);
 		$_SESSION["signed"]['package']['signature']['signer']['signed'] = microtime(true);
 		$_SESSION["signed"]['package']['serial-number'] = md5(signedArrays::getInstance()->collapseArray($_SESSION["signed"]['package']));
 		$_SESSION["signed"]['package']['signature']['requests'] = array();
@@ -591,9 +600,9 @@ class signedPackages extends signedObject
 		$_SESSION["signed"]['package']['requests'][$editnumber]['when']['ended'] = microtime();
 		$_SESSION["signed"]['package']['requests'][$editnumber]['when']['took'] = $_SESSION["signed"]['package']['requests'][$editnumber]['when']['ended'] - $_SESSION["signed"]['package']['requests'][$editnumber]['when']['started'];
 		$_SESSION["signed"]['package']['requests'][$editnumber]['server']['netbios'] = gethostbyaddr($_SERVER["SERVER_ADDR"]);
-		$_SESSION["signed"]['package']['requests'][$editnumber]['server']['ip'] = json_decode(file_get_contents("http://lookups.labs.coop/v1/country/".$_SERVER["SERVER_ADDR"]."/json.api"), true);
+		$_SESSION["signed"]['package']['requests'][$editnumber]['server']['ip'] = json_decode(signedArrays::getFileContents("http://lookups.labs.coop/v1/country/".$_SERVER["SERVER_ADDR"]."/json.api"), true);
 		$_SESSION["signed"]['package']['requests'][$editnumber]['client']['netbios'] = gethostbyaddr(signedSecurity::getInstance()->getIP(true));
-		$_SESSION["signed"]['package']['requests'][$editnumber]['client']['ip'] = json_decode(file_get_contents("http://lookups.labs.coop/v1/country/".signedSecurity::getInstance()->getIP(true)."/json.api"), true);
+		$_SESSION["signed"]['package']['requests'][$editnumber]['client']['ip'] = json_decode(signedArrays::getFileContents("http://lookups.labs.coop/v1/country/".signedSecurity::getInstance()->getIP(true)."/json.api"), true);
 		$_SESSION["signed"]['package']['requests'][$editnumber]['prompts'] = $_SESSION["signed"]['prompts'];
 		$_SESSION["signed"]['package']['requests'][$editnumber]['requests'] = $_SESSION["signed"]['request'];
 		$_SESSION["signed"]['package']['signature']['requests'][$editnumber]['serial-number'] = $_SESSION["signed"]['package']['requests']['serial-number'][$editnumber] = md5(collapseArray($_SESSION["signed"]['package']));

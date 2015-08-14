@@ -1,7 +1,7 @@
 <?php
 	/**
  * @author Gasper Kozak
- * @copyright 2007-2011
+ * @copyright 2.1.9-2011
 
     This file is part of WideImage.
 		
@@ -108,7 +108,7 @@
 		}
 		
 		/**
-		 * @see WideImage_Image#asPalette($nColors, $dither, $matchPalette)
+		 * @see	 WideImage_Image#asPalette($nColors, $dither, $matchPalette)
 		 */
 		function asPalette($nColors = 255, $dither = null, $matchPalette = true)
 		{
@@ -184,7 +184,7 @@
 		}
 		
 		/**
-		 * @see WideImage_Image#getChannels()
+		 * @see	 WideImage_Image#getChannels()
 		 */
 		function getChannels()
 		{
@@ -196,7 +196,7 @@
 		
 		/**
 		 * (non-PHPdoc)
-		 * @see WideImage_Image#copyNoAlpha()
+		 * @see	 WideImage_Image#copyNoAlpha()
 		 */
 		function copyNoAlpha()
 		{
@@ -209,7 +209,7 @@
 		
 		/**
 		 * (non-PHPdoc)
-		 * @see WideImage_Image#asTrueColor()
+		 * @see	 WideImage_Image#asTrueColor()
 		 */
 		function asTrueColor()
 		{

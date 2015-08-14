@@ -25,11 +25,16 @@
 //  Chronolabs Cooperative:- 10/466 Illawarra Rd, Marrickville, NSW, 2204    //
 //  ------------------------------------------------------------------------ //
 
+/**
+ * Precisions set to 18
+ */
+ini_set('precision', '18');
+
 if (!class_exists('xcp'))
 {
 	/**
 	 *
-	 * @author 		Simon Antony Roberts aka. Leshy Cipherhouse <wishcraft@users.sourceforge.net>
+	 * @author 		Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
 	 * @package 	checksum
 	 * @subpackage 	xcp
 	 * @version 	2.0.2
@@ -37,7 +42,7 @@ if (!class_exists('xcp'))
 	 * @category 	forensics
 	 * @namespace	xcp
 	 * @since		2.0.2
-	 * @license		GPL2
+	 * @license			GPL2
 	 * @link		https://sourceforge.net/projects/chronolabs
 	 * @link		https://sourceforge.net/projects/xortify
 	 * @link		https://xortify.com/xcp

@@ -10,14 +10,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
  * @subpackage		class
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
+ *
  */
 
 
@@ -54,7 +63,50 @@ class signedArrays
 			$object = new signedArrays();
 		return $object;
 	}
-		
+
+	/**
+	 * Loads a file as an array skipping commenting
+	 * 
+	 * @param string $filename
+	 * 
+	 * @return array
+	 */
+	static function getFile($filename = '')
+	{
+		$ret = array();
+		if (file_exists($filename))
+		{
+			foreach(file($filename) as $line => $value)
+			{
+				if (substr(trim($value), 0, 2)!="##" && !strpos(' '.$value, "##") && strlen(trim($value))>0)
+				{
+					while(substr($value, strlen($value)-1, 1) == "\r")
+						$value = substr($value, 0, strlen($value)-1);
+					while(substr($value, strlen($value)-1, 1) == "\n")
+						$value = substr($value, 0, strlen($value)-1);
+					while(substr($value, strlen($value)-1, 1) == "\r")
+						$value = substr($value, 0, strlen($value)-1);
+					if (intval(trim($value))!=0 || !is_numeric($value))
+						$ret[] = trim($value);
+				}
+			}
+		}
+		return $ret;
+	}
+	
+	
+	/**
+	 * Loads a file as an array skipping commenting
+	 *
+	 * @param string $filename
+	 *
+	 * @return array
+	 */
+	static function getFileContents($filename = '')
+	{
+		return implode("\n", self::getFile($filename));
+	}
+
 	/**
 	 *
 	 */

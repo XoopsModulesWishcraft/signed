@@ -10,14 +10,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
- * @subpackage		cryptographic
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @subpackage		class
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
  */
 
 if (!class_exists("signedCryptusLibraries"))
@@ -102,7 +110,7 @@ class signedCryptusMcrypt extends signedCryptusLibraries
 	function getAlgorithms()
 	{
 		
-		return array(dirname(__DIR__)	=>	mcrypt_list_algorithms());
+		return array(basename(__DIR__)	=>	mcrypt_list_algorithms());
 	}
 	
 	/**
@@ -117,7 +125,7 @@ class signedCryptusMcrypt extends signedCryptusLibraries
 				foreach($algorithms as $id => $cipher)
 					foreach(mcrypt_list_modes() as $kiey => $mode)
 						if (($bitz == mcrypt_get_key_size($cipher, $mode)) > 0 )
-							$extensions[dirname(__DIR__) . '.' . ".$mode.$bitz".str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $cipher)))] = array("keyen"=>$bitz, "mode"=>$mode, "cipher" => $cipher, "salt" => SIGNED_BLOWFISH_SALT);
+							$extensions[basename(__DIR__) . '.' . ".$mode.$bitz".str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $cipher)))] = array("keyen"=>$bitz, "mode"=>$mode, "cipher" => $cipher, "salt" => SIGNED_BLOWFISH_SALT);
 		return $extensions;
 	}
 	
@@ -181,7 +189,7 @@ class signedCryptusMcrypt extends signedCryptusLibraries
 	 * @param unknown_type $bitz
 	 * @return boolean
 	 */
-	function decrypt($data = '', $key = '', $mode = '', $cipher = '',$mode = '')
+	function decrypt($data = '', $key = '', $cipher = '',$mode = '')
 	{
 		if (($bitz = parent::getKeiyeLength($key, array_key($this->getKeyBitz($cipher, $mode))))>0)
 		{

@@ -10,14 +10,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
- * @subpackage		cryptographic
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @subpackage		class
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
  */
 
 if (!class_exists("signedCryptusLibraries"))
@@ -123,7 +131,7 @@ class signedCryptusAesctr extends signedCryptusLibraries
 	 */
 	function getAlgorithms()
 	{
-		return array(dirname(__DIR__));
+		return array(basename(__DIR__));
 	}
 	
 	/**
@@ -132,9 +140,9 @@ class signedCryptusAesctr extends signedCryptusLibraries
 	 */
 	function getFileExtensions()
 	{
-		return array(		dirname(__DIR__) . '.128' => array("keyen"=>128, "salt" => SIGNED_BLOWFISH_SALT), 
-							dirname(__DIR__) . '.192' => array("keyen"=>192, "salt" => SIGNED_BLOWFISH_SALT), 
-							dirname(__DIR__) . '.256' => array("keyen"=>256, "salt" => SIGNED_BLOWFISH_SALT));
+		return array(		basename(__DIR__) . '.128' => array("keyen"=>128, "salt" => SIGNED_BLOWFISH_SALT), 
+							basename(__DIR__) . '.192' => array("keyen"=>192, "salt" => SIGNED_BLOWFISH_SALT), 
+							basename(__DIR__) . '.256' => array("keyen"=>256, "salt" => SIGNED_BLOWFISH_SALT));
 	}
 	
 	/**

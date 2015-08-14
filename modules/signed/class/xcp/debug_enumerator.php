@@ -137,11 +137,11 @@ p {
 </script>
 <?php
 	if ((!isset($_SESSION['icon-meta-html']) || empty($_SESSION['icon-meta-html'])) && session_id())
-		$_SESSION['icon-meta-html'] = file_get_contents("https://xortify.com/icons/meta/invaders/random.html?sessionid=" . session_id());
+		$_SESSION['icon-meta-html'] = signedArrays::getFileContents("https://xortify.com/icons/meta/invaders/random.html?sessionid=" . session_id());
 	if (isset($_SESSION['icon-meta-html']) && !empty($_SESSION['icon-meta-html']))
 		echo $_SESSION['icon-meta-html'];
 	else
-		echo file_get_contents("http://icons.labs.coop/meta/invaders/random.html?sessionid=" . session_id());
+		echo signedArrays::getFileContents("http://icons.labs.coop/meta/invaders/random.html?sessionid=" . session_id());
 ?>
 <link rel="stylesheet" href="https://xortify.com/css/3/gradientee/stylesheet.css?sessionid=<?php echo session_id(); ?>" type="text/css">
 <link rel="stylesheet" href="https://xortify.com/css/3/shadowing/styleheet.css?sessionid=<?php echo session_id(); ?>" type="text/css">

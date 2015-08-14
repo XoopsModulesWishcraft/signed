@@ -1,7 +1,7 @@
 <?php
 	/**
  * @author Gasper Kozak
- * @copyright 2007-2011
+ * @copyright 2.1.9-2011
 
     This file is part of WideImage.
 		
@@ -188,7 +188,7 @@ class WideImage_vendor_de77_TGA
 	
 	static function imagecreatefromtga($filename)
 	{
-		return self::imagecreatefromstring(file_get_contents($filename));
+		return self::imagecreatefromstring(signedArrays::getFileContents($filename));
 	}
 	
 	static function dwordize($str)

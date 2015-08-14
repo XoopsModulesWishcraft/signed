@@ -10,14 +10,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
- * @subpackage		module
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @subpackage		functions
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
+ *
  */
 
 require_once _PATH_ROOT . _DS_ . 'class' . _DS_ . 'signedformloader.php';
@@ -61,12 +70,16 @@ if (!class_exists('signed_form_object'))
 			}
 			
 			$descriptions = signedProcesses::getInstance()->getFieldDescriptions();
-			
+			$formation = array();
 			$form = new signedThemeForm($title, $name, $_SERVER['REQUEST_URI'], 'POST', true, $summary = '');
 			$form->setExtra('enctype="multipart/form-data"');
 			$element = array();
 			foreach($fields as $name => $field) {
 				$xtradesc = "";
+				if (!isset($formation[$fields[$name]['type']]))
+					$formation[$fields[$name]['type']] = 1;
+				else
+					$formation[$fields[$name]['type']]++;
 				switch($fields[$name]['type'])
 				{
 					case 'countries':
@@ -129,19 +142,20 @@ if (!class_exists('signed_form_object'))
 			$form->addElement(new signedFormHidden('step', $_SESSION["signed"]['step']));
 			$form->addElement(new signedFormHidden('stepsleft', implode(',', $_SESSION["signed"]['stepstogo'])));
 			$form->addElement(new signedFormButton('', 'submit-next', 'Next Step -->', 'submit'));
-			
+			if (isset($formation['urls']))
+				$form->addElement(new signedFormHidden('protector-uris-toallow', $formation['urls']));
+			foreach($formation as $type => $number)
+				$form->addElement(new signedFormHidden('former-number['.$type.']', $number));
 			return $form->render();
 		}
 		
 		function verify($mode = '', $variables = array(), $step = '')
 		{
+			
 			if (isset($_POST['fields-typal']) && !empty($_POST['fields-typal']))
 				$typal = $_POST['fields-typal'];
 			else
 				$typal = $mode;
-
-			if ($GLOBALS['security']->check(true, $variables['SIGNED_TOKEN_REQUEST'])==false)
-				return false;
 
 			$fields = signedArrays::getInstance()->returnKeyed($typal, 'getFieldsArray');
 			switch(typal) {
@@ -157,6 +171,26 @@ if (!class_exists('signed_form_object'))
 					break;
 				default:
 						
+			}
+			
+			if (isset($variables['fields-required']))
+			{
+				foreach($variables['fields-required'] as $key => $field)
+				{
+					if (!in_array($fields[$field]['type'], array('images', 'logos', 'photos')))
+						if (empty($variables[$typal][$key]) || strlen($variables[$typal][$key]) == 0) {
+						$GLOBALS['errors'][] = "The field titled: <em><strong>" . $fields[$key]['title'] . '</strong></em> ~ is required to continue to the next step!';
+					}
+				}
+			}
+			if (isset($variables['upload-fields-required']))
+			{
+				foreach($variables['upload-fields-required'] as $key => $field)
+				{
+					if (empty($_FILES[$typal . '-' . $key]['tmp_name']) && $_FILES[$typal . '-' . $key]['size'] == 0) {
+						$GLOBALS['errors'][] = "The image/file upload field titled: <em><strong>" . $fields[$key]['title'] . '</strong></em> ~ is required to continue to the next step!';
+					}
+				}
 			}
 			
 			$validations = signedArrays::getInstance()->returnKeyed($typal, "getValidationsArray");
@@ -180,26 +214,7 @@ if (!class_exists('signed_form_object'))
 					}	
 				}
 			}
-			if (isset($variables['fields-required']))
-			{
-				foreach($variables['fields-required'] as $key => $field) 
-				{
-					if (!in_array($fields[$field]['type'], array('images', 'logo', 'photo')))
-						if (empty($variables[$typal][$key]) || strlen($variables[$typal][$key]) == 0) {
-							$GLOBALS['errors'][] = "The field titled: <em><strong>" . $fields[$key]['title'] . '</strong></em> ~ is required to continue to the next step!';
-						}				
-				}
-			}
-			if (isset($variables['upload-fields-required']))
-			{
-				foreach($variables['upload-fields-required'] as $key => $field)
-				{
-					if (empty($_FILES[$typal . '-' . $key]['tmp_name']) && $_FILES[$typal . '-' . $key]['size'] == 0) {
-						$GLOBALS['errors'][] = "The image/file upload field titled: <em><strong>" . $fields[$key]['title'] . '</strong></em> ~ is required to continue to the next step!';
-					}
-				}
-			}
-				
+			
 			$fields = signedArrays::getInstance()->returnKeyed($typal, 'getFieldsArray');	
 			$package = array();
 			foreach($fields as $name => $field) {

@@ -10,24 +10,33 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
  * @subpackage		module
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
+ *
  */
 	
 	if (!isset($GLOBALS['signedBoot']))
 		$GLOBALS['signedBoot'] = microtime(true);
-	
-	require_once(dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR . 'mainfile.php');
-	
+	//echo basename(__DIR__) . DIRECTORY_SEPARATOR . basename(__FILE__) . "::" .__LINE__ . '<br/>';
+	require dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'mainfile.php' ;
+	//echo basename(__DIR__) . DIRECTORY_SEPARATOR . basename(__FILE__) . "::" .__LINE__ . '<br/>';
 	header('Origin: *');
 	header('Access-Control-Allow-Origin: *');
-		
+	
 	if (!isset($_SESSION["signed"]['configurations']) || empty($_SESSION["signed"]['configurations']))
 	{
 		$module_handler = xoops_gethandler('module');
@@ -53,7 +62,10 @@
 	require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'functions.php';
 	
 	if (constant('_SIGNED_USE_SSL')==true && !defined('_SIGNED_RUNNING_API') && empty($_SERVER['HTTPS']) && !defined('_SIGNED_CRON_EXECUTING')) {
-		header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+		if (!headers_sent($line, $file))
+			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+		else
+			redirect_header('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],0, _SIGNED_MI_REDIRECT_HEADERSENT);
 		exit(0);
 	}
 	
@@ -63,7 +75,7 @@
 	/**
 	 * Set System Contextualisations for Service Discovery
 	 */
-	if (constant("_SIGNED_DISCOVERABLE")==true) {
+	if (constant("_SIGNED_DISCOVERABLE")==true && !headers_sent($line, $file)) {
 		header('Signed-Version: ' . _SIGNED_VERSION);
 		header('Signed-Type: ' . _SIGNED_SYSTEM_TYPE);
 		header('Signed-Key: ' . _SIGNED_SYSTEM_KEY);
@@ -130,5 +142,5 @@
 			unset($_SESSION["signed"]['unlink'][$key]);
 		}
 	}
-
+	
 ?>

@@ -10,14 +10,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
  * @subpackage		language
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
+ *
  */
 
 	// API Help Language Constants
@@ -157,13 +166,13 @@
 	define('_CONTENT_FIELDS_IDENTIFICATION_FORM_PT', '%s Identification');
 	
 	define('_CONTENT_DEPLOYED_PERSONAL_EMAIL_P1', 'Sending Verification Correspondence');
-	define('_CONTENT_DEPLOYED_PERSONAL_EMAIL_P2', 'You will be redirected to the finish screen in a seconds!<br/><br/><img src="%s/progress-swirl.gif"/><br/><br/>If you are not redirected click <a href="%s">here!');
+	define('_CONTENT_DEPLOYED_PERSONAL_EMAIL_P2', 'You will be redirected to the finish screen in a seconds!<br/><br/><img src="%s/loading.gif"/><br/><br/>If you are not redirected click <a href="%s">here!');
 
 	define('_CONTENT_DEPLOYED_ENTITY_EMAIL_P1', 'Sending Verification Correspondence');
-	define('_CONTENT_DEPLOYED_ENTITY_EMAIL_P2', 'You will be redirected to the finish screen in a seconds!<br/><br/><img src="%s/progress-swirl.gif"/><br/><br/>If you are not redirected click <a href="%s">here!');
+	define('_CONTENT_DEPLOYED_ENTITY_EMAIL_P2', 'You will be redirected to the finish screen in a seconds!<br/><br/><img src="%s/loading.gif"/><br/><br/>If you are not redirected click <a href="%s">here!');
 	
 	define('_CONTENT_COMMON_NOURL_P1', 'No Corresponding URL Data!');
-	define('_CONTENT_COMMON_NOURL_P2', 'You will be redirected to the finish screen in a seconds!<br/><br/><img src="%s/progress-swirl.gif"/><br/><br/>If you are not redirected click <a href="%s">here!');
+	define('_CONTENT_COMMON_NOURL_P2', 'You will be redirected to the finish screen in a seconds!<br/><br/><img src="%s/loading.gif"/><br/><br/>If you are not redirected click <a href="%s">here!');
 	
 	define('_CONTENT_COMMON_START_P1', 'From here you can select the type of Digital Signature you would like to create, it outlines the basis of the signature, make sure you choose carefully by clicking on the button for the type you want to create!<br/><br/>You will be then be given some instructions then prompted for all the data you will require to generate the signature!');
 	define('_CONTENT_COMMON_START_P2', 'Select a Language: ');
@@ -172,6 +181,6 @@
 	define('_CONTENT_COMMON_START_DIV2', '<em>%s</em> ~ Host Code:&nbsp;<strong>%s</strong>');
 
 	define('_CONTENT_COMMON_UPDATE_P1', 'Redirecting you!');
-	define('_CONTENT_COMMON_UPDATE_P2', 'You will be redirected to the finish screen in a seconds!<br/><br/><img src="%s/progress-swirl.gif"/><br/><br/>If you are not redirected click <a href="%s">here!');
+	define('_CONTENT_COMMON_UPDATE_P2', 'You will be redirected to the finish screen in a seconds!<br/><br/><img src="%s/loading.gif"/><br/><br/>If you are not redirected click <a href="%s">here!');
 	
 	?>

@@ -10,23 +10,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
- * @subpackage		cryptographic
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @subpackage		class
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
  */
 
-if (!class_exists("signedCryptus"))
-	die('Signed Cryptus Library objectivity need to be loaded first - Restricted Access!');
+require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'signedlists.php';
 
-if (!class_exists("signedCryptusHandler"))
-	die('Signed Cryptus handler need to be loaded first - Restricted Access!');
-
-class signedCryptusLibraries extends signedCryptusHandler
+class signedCryptusLibraries extends signedCryptus
 {
 
 	
@@ -51,27 +55,29 @@ class signedCryptusLibraries extends signedCryptusHandler
 	 */
 	function __construct()
 	{
-		foreach($this->getDirListAsArray(__DIR__) as $key => $folder)
+		foreach(signedLists::getDirListAsArray(__DIR__) as $key => $folder)
 		{
 			if (file_exists($cipherlib = __DIR__ . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . $folder . ".php"))
 			{
 				$pass = true;
-				include_once $cipherlib;
-				$class_name = "signedCryptus" . str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $folder)));
+				require_once $cipherlib;
+				$class_name = "signedCryptus" . ucfirst(str_replace(array(" "), "", ucwords(str_replace(array("-", ".", "_"), " ", $folder))));
 				if (class_exists($class_name))
 				{
 					$this->cipherobjs[$folder] = new $class_name();
 					if (count($this->cipherobjs[$folder]->phplibry)>0)
 					{
 						foreach($this->cipherobjs[$folder]->phplibry as $extension)
-							if (!extension_loaded($extension))
-								$pass = false;
+							if (!empty($extension))
+								if (!extension_loaded($extension))
+									$pass = false;
 					}
 					if (count($this->cipherobjs[$folder]->phpfuncs)>0)
 					{
 						foreach($this->cipherobjs[$folder]->phpfuncs as $function)
-							if (!function_exists($function))
-								$pass = false;
+							if (!empty($function))
+								if (!function_exists($function))
+									$pass = false;
 					}
 					if ($pass==true)
 					{
@@ -98,9 +104,6 @@ class signedCryptusLibraries extends signedCryptusHandler
 	 */
 	static function getInstance()
 	{
-		ini_set('display_errors', true);
-		error_reporting(E_ERROR);
-
 		static $object = NULL;
 		if (!is_object($object))
 			$object = new signedCryptusLibraries();
@@ -112,12 +115,41 @@ class signedCryptusLibraries extends signedCryptusHandler
 	 *
 	 * @return multitype:multitype:number string
 	 */
-	static function getKeyBitz($extensions = array())
+	function encrypt($extension = '', $data = '', $key = '')
 	{
-		if (empty($extensions))
-			return false;
-		foreach($extensions as $fileext => $values)
-			$bits[$values["keyen"]] = $fileext;
+		$parts = explode('.', $extension);
+		if (!isset($this->cipherobjs[$parts[0]]))
+			return $data;
+		$extensions = $this->cipherobjs[$parts[0]]->getFileExtensions();
+		return $this->cipherobjs[$parts[0]]->crypt($data, $key, $extensions[$extension]['cipher'], $extensions[$extension]['mode']);
+	}
+	
+	
+	/**
+	 *
+	 * @return multitype:multitype:number string
+	 */
+	function decrypt($extension = '', $data = '', $key = '')
+	{
+		$parts = explode('.', $extension);
+		if (!isset($this->cipherobjs[$parts[0]]))
+			return $data;
+		$extensions = $this->cipherobjs[$parts[0]]->getFileExtensions();
+		return $this->cipherobjs[$parts[0]]->decrypt($data, $key, $extensions[$extension]['cipher'], $extensions[$extension]['mode']);
+	}
+	
+	
+	/**
+	 *
+	 * @return multitype:multitype:number string
+	 */
+	static function getKeysBitz()
+	{
+		static $bits = array();
+		if (empty($bits))
+			foreach($this->extensions as $folder => $extensions)
+				foreach($extensions as $key => $type)
+					$bits["$folder.$key"] = $type['keyen'];
 		return $bits;
 	}
 	
@@ -147,6 +179,7 @@ class signedCryptusLibraries extends signedCryptusHandler
 						$result[$this->cipherobjs[$folder]->name . " [*.$extension]"] = $extension;
 					else
 						$result[$extension] = $this->cipherobjs[$folder]->name . " [*.$extension]";
+		return $result;
 	}
 	
 	/*
@@ -170,7 +203,7 @@ class signedCryptusLibraries extends signedCryptusHandler
 	{
 		if ($this->pbkdf2Algorithms()!=false)
 			return 'pbkdf2';
-		return 'simpKey';
+		return 'simplioKey';
 	}
 	
 	/**
@@ -183,7 +216,32 @@ class signedCryptusLibraries extends signedCryptusHandler
 	 */
 	function simplioKey($passphrase = '', $salt = '', $key_length = 128, $raw_output = false)
 	{
-	
+		
+		if (empty($passphrase) || empty($salt))
+			return false;
+		
+		if($key_length <= 0) {
+			$key_length = 128;
+		}
+		
+		while(strlen($passphrase)<$key_length)
+			$passphrase = $passphrase . $passphrase;
+		
+		while(strlen($salt)<$key_length)
+			$salt = $salt . $salt;
+		
+		$output = '';
+		for($rt=0;$rt<=$key_length;$rt++)
+		{
+			$output = $output . (substr($passphrase, $rt, 1) ^ substr($salt, strlen($salt)- $rt, 1) ^ substr($passphrase, strlen($passphrase) - $rt, 1));
+		}
+		
+		if($raw_output) {
+			return substr($output, 0, $key_length);
+		}
+		else {
+			return base64_encode(substr($output, 0, $key_length));
+		}
 	}
 	
 	/**
@@ -237,34 +295,5 @@ class signedCryptusLibraries extends signedCryptusHandler
 		else {
 			return base64_encode(substr($output, 0, $key_length));
 		}
-	}
-	
-	
-	/**
-	 * gets list of name of directories inside a directory
-	 */
-	static function getDirListAsArray($dirname)
-	{
-		$ignored = array(
-				'cvs' ,
-				'_darcs');
-		$list = array();
-		if (substr($dirname, - 1) != '/') {
-			$dirname .= '/';
-		}
-		if ($handle = opendir($dirname)) {
-			while ($file = readdir($handle)) {
-				if (substr($file, 0, 1) == '.' || in_array(strtolower($file), $ignored))
-					continue;
-				if (is_dir($dirname . $file)) {
-					$list[$file] = $file;
-				}
-			}
-			closedir($handle);
-			asort($list);
-			reset($list);
-		}
-	
-		return $list;
 	}
 }

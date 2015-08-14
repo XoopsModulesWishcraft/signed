@@ -45,6 +45,11 @@
 	$pin = (!isset($_REQUEST['pin'])?$_SESSION['salty']['pin']:$_REQUEST["pin"]);
 	$api = (!isset($_REQUEST['api'])?'':$_REQUEST["api"]);
 	
+	if (empty($email))
+		$email = $GLOBALS["xoopsConfig"]['admin_email'];
+	if (empty($name))
+		$name = $GLOBALS["xoopsConfig"]['site_name'];
+	
 	if (empty($email)||empty($name)||empty($url)||empty($pin)||strlen($pin)<4||!is_numeric($pin))
 		$op = 'default';
 	require_once 'admin_header.php';
@@ -64,7 +69,7 @@
 		case 'default':
 			$_SESSION['salty'] = array();
 			$stepform = new signedForm(_SIGNED_AM_FORM_SALTY_ONE_TITLE, 'salpha', $_SERVER["REQUEST_URI"], 'post', true);
-			$stepform->addElement(new XoopsFormText(_SIGNED_AM_FORM_EMAIL, 'email', 32, 255, (empty($email)?$GLOBALS['xoopsConfig']['admin_mail']:$email)), true);
+			$stepform->addElement(new XoopsFormText(_SIGNED_AM_FORM_EMAIL, 'email', 32, 255, (empty($email)?$GLOBALS['xoopsConfig']['admin_email']:$email)), true);
 			$stepform->addElement(new XoopsFormText(_SIGNED_AM_FORM_NAME, 'name', 32, 255, (empty($name)?$GLOBALS['xoopsConfig']['site_name']:$name)), true);
 			$stepform->addElement(new XoopsFormText(_SIGNED_AM_FORM_URL, 'url', 32, 255, (empty($url)?constant("XOOPS_URL"):$url)), true);
 			$stepform->addElement(new XoopsFormText(_SIGNED_AM_FORM_PIN, 'pin', 12, 12, $pin), true);

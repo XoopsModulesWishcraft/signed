@@ -1,7 +1,7 @@
 <?php
 	/**
  * @author Gasper Kozak
- * @copyright 2007-2011
+ * @copyright 2.1.9-2011
 
     This file is part of WideImage.
 		

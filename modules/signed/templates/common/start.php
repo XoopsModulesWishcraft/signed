@@ -10,18 +10,30 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @copyright       Chronolabs Cooperative http://labs.coop
- * @license         General Software Licence (https://web.labs.coop/public/legal/general-software-license/10,3.html)
- * @package         signed
- * @since           2.07
- * @author          Simon Roberts <wishcraft@users.sourceforge.net>
- * @author          Leshy Cipherhouse <leshy@slams.io>
+ * @license			General Software Licence (http://labs.coop/briefs/legal/general-software-license/10,3.html)
+ * @license			End User License (http://labs.coop/briefs/legal/end-user-license/11,3.html)
+ * @license			Privacy and Mooching Policy (http://labs.coop/briefs/legal/privacy-and-mooching-policy/22,3.html)
+ * @license			General Public Licence 3 (http://labs.coop/briefs/legal/general-public-licence/13,3.html)
+ * @category		signed
+ * @since			2.1.9
+ * @version			2.2.0
+ * @author			Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
+ * @author          Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
  * @subpackage		templates
  * @description		Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
- * @link			https://signed.labs.coop Digital Signature Generation & API Services (Psuedo-legal correct binding measure)
+ * @link			Farming Digital Fingerprint Signatures: https://signed.ringwould.com.au
+ * @link			Heavy Hash-info Digital Fingerprint Signature: http://signed.hempembassy.net
+ * @link			XOOPS SVN: https://sourceforge.net/p/xoops/svn/HEAD/tree/XoopsModules/signed/
+ * @see				Release Article: http://cipher.labs.coop/portfolio/signed-identification-validations-and-signer-for-xoops/
+ * @filesource
+ *
  */
 if ($_SESSION["signed"]['configurations']['htaccess'] && strpos($_SERVER["REQUEST_URI"], 'modules/'))
 {
-	header('Location: ' . _URL_ROOT . '/index' . $_SESSION["signed"]['configurations']['htaccess_extension']);
+	if (!headers_sent($line, $file))
+		header('Location: ' . _URL_ROOT . '/index' . $_SESSION["signed"]['configurations']['htaccess_extension']);
+	else
+		redirect_header(_URL_ROOT . '/index' . $_SESSION["signed"]['configurations']['htaccess_extension'], 0,  _SIGNED_MI_REDIRECT_HEADERSENT);
 	exit(0);
 }
 signedCanvas::getInstance()->addScript('', "$(function(){
@@ -45,7 +57,7 @@ signedCanvas::getInstance()->addScript('', "$(function(){
 ?>	<div style="height: 28px; width: 100%">&nbsp;</div> 
 	<form name="<?php echo $mode; ?>" method="post" action="<?php echo _URL_ROOT; ?>/=generator=/<?php if ($_SESSION["signed"]['configurations']['htaccess']) { echo 'index' . $_SESSION["signed"]['configurations']['htaccess_extension']; } ?>">
 		<input type="hidden" name="signature_mode" value="<?php echo $mode; ?>" />
-		<input type="submit" name="submit" value="<?php echo sprintf(_CONTENT_COMMON_START_IP1, trim($name)); ?>" style="font-size: 1.4321em; font-weight: bold" class="button" id="button">
+		<input type="submit" name="submit" value="<?php echo sprintf(_CONTENT_COMMON_START_IP1, trim($name)); ?>" style="font-size: 1.0321em; font-weight: bold" class="button" id="button">
 	</form>
 	
 <?php } 

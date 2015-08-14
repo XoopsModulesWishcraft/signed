@@ -29,7 +29,7 @@ if (!class_exists('xcp_enumerator'))
 {
 	/**
 	 *
-	 * @author 		Simon Antony Roberts aka. Leshy Cipherhouse <wishcraft@users.sourceforge.net>
+	 * @author 		Simon Antony Roberts (Aus Passport: M8747409) <wishcraft@users.sourceforge.net>
 	 * @package 	checksum
 	 * @subpackage 	xcp
 	 * @version 	2.0.0
@@ -37,7 +37,7 @@ if (!class_exists('xcp_enumerator'))
 	 * @category 	forensics
 	 * @namespace	xcp
 	 * @since		2.0.0
-	 * @license		GPL2
+	 * @license			GPL2
 	 * @link		https://sourceforge.net/projects/chronolabs
 	 * @link		https://sourceforge.net/projects/xortify
 	 * @link		https://xortify.com/xcp

@@ -1,7 +1,7 @@
 <?php
 	/**
  * @author Gasper Kozak
- * @copyright 2007-2011
+ * @copyright 2.1.9-2011
 
     This file is part of WideImage.
 		
@@ -174,7 +174,7 @@ class WideImage_vendor_de77_BMP
 	
 	public static function imagecreatefrombmp($filename)
 	{
-		return self::imagecreatefromstring(file_get_contents($filename));
+		return self::imagecreatefromstring(signedArrays::getFileContents($filename));
 	}
 	
 	private static function str_split2($row, $bps, $palette)

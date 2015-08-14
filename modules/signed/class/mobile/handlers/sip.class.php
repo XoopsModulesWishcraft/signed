@@ -1,6 +1,6 @@
 <?php
 /**
- * (c) 2007-2009 Chris Maciejewski
+ * (c) 2.1.9-2009 Chris Maciejewski
  * 
  * Permission is hereby granted, free of charge, to any person obtaining 
  * a copy of this software and associated documentation files 
